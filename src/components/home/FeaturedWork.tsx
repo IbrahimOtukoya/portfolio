@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
+import { useImageRatios } from "@/hooks/useImageRatios";
 
 export type FeaturedProject = {
   slug: string;
@@ -49,7 +50,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
       <div className="mt-8 grid lg:grid-cols-[228px_1fr] lg:gap-[19px]">
         {/* /FILTER column, checkboxes as in the Figma frame */}
         <div>
-          <p className="label border-b border-accent pb-4 text-accent">/Filter</p>
+          <p className="label border-b border-accent-soft pb-4 text-accent">/Filter</p>
           <ul className="label mt-4 flex flex-wrap gap-x-6 gap-y-[13px] text-accent lg:mt-8 lg:flex-col">
             {[null, ...site.services].map((s) => {
               const active = s === null ? selected.length === 0 : selected.includes(s.toLowerCase());
@@ -67,7 +68,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
 
         <div className="mt-12 lg:mt-0">
           {/* Column headings */}
-          <div className={`label hidden border-b border-accent pb-4 text-accent lg:grid ${cols}`}>
+          <div className={`label hidden border-b border-label pb-4 text-accent lg:grid ${cols}`}>
             <span>/Projects</span>
             <span>/Role</span>
             <span>/Industry</span>
@@ -107,13 +108,15 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
 
 function Row({ project: p }: { project: FeaturedProject }) {
   const href = `/${p.slug}`;
+  const thumbs = p.thumbnails.slice(0, 3);
+  const { ratio, bind } = useImageRatios();
   const roles = p.roles.join(" / ");
   const industry = p.industry && (
     <span className="inline-block rounded-[4px] border border-[#c4c4c4] px-1.5 py-1 leading-none">{p.industry}</span>
   );
 
   return (
-    <li className="flex flex-col gap-6 border-b border-accent-soft py-10 last:border-b-0">
+    <li className="flex flex-col gap-6 border-b border-label py-10 last:border-b-0">
       {/* Title, role and industry share one line on desktop */}
       <div className={`grid items-center gap-3 lg:gap-0 ${cols}`}>
         <h3 className="text-2xl leading-[1.25] tracking-[-0.01em] text-muted sm:text-[32px] lg:pr-6">
@@ -133,10 +136,24 @@ function Row({ project: p }: { project: FeaturedProject }) {
         ))}
       </div>
 
-      {p.thumbnails.length > 0 && (
-        <Link href={href} className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-[26px]" tabIndex={-1} aria-hidden>
-          {p.thumbnails.slice(0, 3).map((src) => (
-            <img key={src} src={src} alt="" loading="lazy" className="aspect-video w-full object-cover" />
+      {thumbs.length > 0 && (
+        // Images keep their proportions and share one height. A full row of three is
+        // stretched to the column width; shorter rows use a fixed height instead.
+        <Link href={href} className="flex flex-col gap-4 sm:flex-row sm:gap-[26px]" tabIndex={-1} aria-hidden>
+          {thumbs.map((src, i) => (
+            <img
+              key={src}
+              src={src}
+              alt=""
+              loading="lazy"
+              {...bind(i)}
+              style={{ "--r": ratio(i) } as React.CSSProperties}
+              className={
+                thumbs.length === 3
+                  ? "w-full min-w-0 sm:[flex:var(--r)_1_0%]"
+                  : "w-full sm:h-[216px] sm:w-auto sm:max-w-full"
+              }
+            />
           ))}
         </Link>
       )}

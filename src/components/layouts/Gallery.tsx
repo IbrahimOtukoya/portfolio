@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Notion images have unknown sizes and come from many hosts */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useImageRatios } from "@/hooks/useImageRatios";
 
 export type GalleryImage = { src: string; alt: string };
 
@@ -10,12 +11,8 @@ const PER_ROW = 3;
 /** Justified image rows; clicking a tile zooms it over a blurred backdrop. */
 export function Gallery({ images }: { images: GalleryImage[] }) {
   const [open, setOpen] = useState<number | null>(null);
-  const [ratios, setRatios] = useState<Record<number, number>>({});
+  const { ratio, bind } = useImageRatios();
   const touchX = useRef<number | null>(null);
-  const measure = useCallback((el: HTMLImageElement, i: number) => {
-    const { naturalWidth: w, naturalHeight: h } = el;
-    if (w && h) setRatios((rs) => (rs[i] === w / h ? rs : { ...rs, [i]: w / h }));
-  }, []);
   const rows = useMemo(() => {
     const out: { img: GalleryImage; i: number }[][] = [];
     images.forEach((img, i) => (i % PER_ROW === 0 ? out.push([{ img, i }]) : out[out.length - 1].push({ img, i })));
@@ -53,7 +50,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
               <button
                 key={img.src + i}
                 onClick={() => setOpen(i)}
-                style={{ "--r": ratios[i] ?? 1 } as React.CSSProperties}
+                style={{ "--r": ratio(i) } as React.CSSProperties}
                 className="group block min-w-0 cursor-zoom-in overflow-hidden lg:[flex:var(--r)_1_0%]"
                 aria-label={`Open image ${i + 1}`}
               >
@@ -61,11 +58,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
                   src={img.src}
                   alt={img.alt}
                   loading="lazy"
-                  // Images cached before hydration never fire onLoad, so measure those on mount.
-                  ref={(el) => {
-                    if (el?.complete) measure(el, i);
-                  }}
-                  onLoad={(e) => measure(e.currentTarget, i)}
+                  {...bind(i)}
                   className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
                 />
               </button>
