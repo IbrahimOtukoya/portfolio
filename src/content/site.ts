@@ -9,10 +9,16 @@ export const site = {
   enquiryHref: "mailto:ibrahimotukoya100@gmail.com?subject=Project%20enquiry",
   location: "Based in Lagos, Nigeria",
   hero: {
-    headline: ["Thinker.", "Craftsman.", "Scribbler."],
-    role: "Brand designer, Moniepoint | Ex: Anchor",
+    headline: "Thinker. Craftsman. Scribbler",
+    role: "Senior brand designer, Moniepoint | Ex: Anchor",
     bio: "Brands shape experiences. I shape brands. Working with the mind of an engineer and the eye of a designer, I've built visual systems for fintech startups and companies serving millions across Africa. Currently designing brand systems at Moniepoint.",
   },
+  // Hero tiles; illustrations live in /public/pixel.
+  tiles: [
+    { label: "Work", href: "/#work", color: "var(--label)" },
+    { label: "Thoughts", href: "https://ibrahimotukoya.substack.com/", color: "var(--orange)" },
+    { label: "Experiments", href: "/archive", color: "var(--sky)" },
+  ],
   services: ["Branding", "Illustration", "Editorial", "Graphic design", "Motion design", "Web design"],
   socials: [
     { label: "Instagram", href: "https://www.instagram.com/iotukoya/" },

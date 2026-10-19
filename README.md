@@ -1,6 +1,6 @@
 # Ibrahim Otukoya — portfolio
 
-Next.js site on Vercel. Projects are managed in the Notion database **Portfolio Projects**; Home hero, About and Archive content lives in `src/content/site.ts`.
+Next.js site on Vercel, built from the Figma file "Portfolio". Projects are managed in the Notion database **Portfolio Projects**; Home hero, About and Archive content lives in `src/content/site.ts`.
 
 ## How content works
 
@@ -11,11 +11,13 @@ Each row in the Notion database is one project. Only rows with **Published** tic
 | Title, Summary | Heading and intro text |
 | Slug | URL, e.g. `anchor` → `/anchor` |
 | Layout | **Case study** (text and images in order), **Gallery** (image grid, click to zoom), **Showcase** (flip-book; each image is one page) |
-| Role, Industry, Year | Tags shown on the card and project page |
+| Years, Role, Industry | The /YEAR, /ROLE and INDUSTRY columns on the home page |
+| Category | Drives the /FILTER list (Branding, Illustration, Editorial, Graphic Design) |
+| Thumbnails | Images in the home page row; if empty, the first 4 images in the page are used |
 | Website, Prints link | Optional buttons on the project page |
 | Order | Position on the home grid and in previous/next links |
 | Featured | Shows on the home page |
-| Cover | Card thumbnail (falls back to the page cover) |
+| Cover | Social preview image (falls back to the page cover) |
 
 The page body is the content. For Gallery and Showcase, any text above the first image becomes the intro.
 
@@ -32,3 +34,7 @@ npm run dev
 ## Deploying
 
 Import the repo in Vercel, add the three variables from `.env.example` under Settings → Environment Variables, and deploy.
+
+## Pixel art
+
+The navbar icon, hero illustrations and footer portrait are SVGs in `public/pixel/`, exported from Figma.

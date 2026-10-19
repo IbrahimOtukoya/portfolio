@@ -19,14 +19,16 @@ export type Project = {
   slug: string;
   layout: Layout;
   summary: string;
-  role: string | null;
+  years: string;
+  roles: string[];
+  categories: string[];
   industry: string | null;
-  year: number | null;
   website: string | null;
   printsLink: string | null;
   order: number;
   featured: boolean;
   cover: string | null;
+  thumbnails: string[];
 };
 
 /** A Notion block with its children already loaded (for columns, toggles, lists). */
@@ -59,6 +61,11 @@ function select(props: Props, name: string): string | null {
   return p?.type === "select" ? (p.select?.name ?? null) : null;
 }
 
+function multi(props: Props, name: string): string[] {
+  const p = props[name];
+  return p?.type === "multi_select" ? p.multi_select.map((o) => o.name) : [];
+}
+
 function num(props: Props, name: string): number | null {
   const p = props[name];
   return p?.type === "number" ? p.number : null;
@@ -79,19 +86,21 @@ function checkbox(props: Props, name: string): boolean {
  * are served through /api/notion-image, which looks up a fresh URL on request.
  * External URLs never expire and are used directly.
  */
-export function pageCoverUrl(page: PageObjectResponse): string | null {
-  const props = page.properties;
-  const coverProp = props["Cover"];
-  if (coverProp?.type === "files" && coverProp.files.length > 0) {
-    const f = coverProp.files[0];
-    return f.type === "external" ? f.external.url : `/api/notion-image/cover-prop/${page.id}`;
-  }
-  if (page.cover) {
-    return page.cover.type === "external"
-      ? page.cover.external.url
-      : `/api/notion-image/cover/${page.id}`;
-  }
-  return null;
+function fileUrls(page: PageObjectResponse, name: string): string[] {
+  const p = page.properties[name];
+  if (p?.type !== "files") return [];
+  return p.files.map((f, i) =>
+    f.type === "external"
+      ? f.external.url
+      : `/api/notion-image/prop/${page.id}~${encodeURIComponent(name)}~${i}`,
+  );
+}
+
+function pageCoverUrl(page: PageObjectResponse): string | null {
+  const [fromProp] = fileUrls(page, "Cover");
+  if (fromProp) return fromProp;
+  if (!page.cover) return null;
+  return page.cover.type === "external" ? page.cover.external.url : `/api/notion-image/cover/${page.id}`;
 }
 
 function toProject(page: PageObjectResponse): Project {
@@ -103,14 +112,16 @@ function toProject(page: PageObjectResponse): Project {
     slug: text(props, "Slug").trim() || page.id,
     layout: layout === "Gallery" || layout === "Showcase" ? layout : "Case study",
     summary: text(props, "Summary"),
-    role: select(props, "Role"),
+    years: text(props, "Years"),
+    roles: multi(props, "Role"),
+    categories: multi(props, "Category"),
     industry: select(props, "Industry"),
-    year: num(props, "Year"),
     website: url(props, "Website"),
     printsLink: url(props, "Prints link"),
     order: num(props, "Order") ?? Number.MAX_SAFE_INTEGER,
     featured: checkbox(props, "Featured"),
     cover: pageCoverUrl(page),
+    thumbnails: fileUrls(page, "Thumbnails"),
   };
 }
 
@@ -151,6 +162,16 @@ async function listChildren(blockId: string): Promise<Block[]> {
 
 export const getBlocks = cache(listChildren);
 
+/** Images for a project's home page row: the Thumbnails property, else the first images in the page. */
+export async function getThumbnails(project: Project, limit = 4): Promise<string[]> {
+  if (project.thumbnails.length > 0) return project.thumbnails;
+  const blocks = await getBlocks(project.id);
+  return blocks
+    .map(imageUrl)
+    .filter((u): u is string => !!u)
+    .slice(0, limit);
+}
+
 /** URL to show for an image block; Notion-hosted files go through the refresh proxy. */
 export function imageUrl(block: Block): string | null {
   if (block.type !== "image") return null;
@@ -160,23 +181,22 @@ export function imageUrl(block: Block): string | null {
 }
 
 /** Fresh signed URL for a Notion-hosted file, used by the image proxy route. */
-export async function freshFileUrl(
-  kind: "block" | "cover" | "cover-prop",
-  id: string,
-): Promise<string | null> {
+export async function freshFileUrl(kind: "block" | "cover" | "prop", id: string): Promise<string | null> {
   if (kind === "block") {
     const block = await notion.blocks.retrieve({ block_id: id });
     if (!isFullBlock(block) || block.type !== "image") return null;
     return block.image.type === "file" ? block.image.file.url : block.image.external.url;
   }
-  const page = await notion.pages.retrieve({ page_id: id });
+  const [pageId, propName, index] = kind === "prop" ? id.split("~") : [id];
+  const page = await notion.pages.retrieve({ page_id: pageId });
   if (!isFullPage(page)) return null;
   if (kind === "cover") {
     if (!page.cover) return null;
     return page.cover.type === "file" ? page.cover.file.url : page.cover.external.url;
   }
-  const prop = page.properties["Cover"];
-  if (prop?.type !== "files" || prop.files.length === 0) return null;
-  const f = prop.files[0];
+  const prop = page.properties[decodeURIComponent(propName ?? "")];
+  if (prop?.type !== "files") return null;
+  const f = prop.files[Number(index)];
+  if (!f) return null;
   return f.type === "file" ? f.file.url : f.external.url;
 }

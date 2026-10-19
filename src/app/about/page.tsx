@@ -9,8 +9,8 @@ export const metadata: Metadata = {
 
 export default function About() {
   return (
-    <div className="pt-16">
-      <h1 className="max-w-5xl text-4xl font-semibold uppercase leading-[1] tracking-tight sm:text-7xl">
+    <div className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
+      <h1 className="max-w-5xl text-4xl uppercase text-accent leading-[1] tracking-tight sm:text-7xl">
         {about.headline}
       </h1>
 
@@ -24,8 +24,8 @@ export default function About() {
       </div>
 
       <section className="mt-24">
-        <h2 className="label mb-6">/Past experience</h2>
-        <ul className="divide-y divide-line border-y border-line">
+        <h2 className="label mb-6 text-accent">/Past experience</h2>
+        <ul className="divide-y divide-accent-soft border-y border-accent-soft">
           {about.experience.map((e) => (
             <li key={e.role + e.years} className="flex flex-wrap items-baseline justify-between gap-2 py-4">
               <span className="text-lg">
@@ -38,7 +38,7 @@ export default function About() {
         </ul>
       </section>
 
-      <section className="mt-24 grid gap-12 md:grid-cols-2">
+      <section id="now" className="mt-24 grid scroll-mt-[90px] gap-12 md:grid-cols-2">
         <Shelf title="Now reading" images={about.reading} />
         <Shelf title="Watching" images={about.watching} />
       </section>
@@ -49,7 +49,7 @@ export default function About() {
 function Shelf({ title, images }: { title: string; images: string[] }) {
   return (
     <div>
-      <h2 className="label mb-6">/{title}</h2>
+      <h2 className="label mb-6 text-accent">/{title}</h2>
       <div className="flex gap-4">
         {images.map((src) => (
           <img key={src} src={src} alt="" loading="lazy" className="h-56 w-auto rounded-md object-cover shadow-sm" />

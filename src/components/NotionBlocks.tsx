@@ -8,7 +8,7 @@ export function RichText({ items }: { items: RichTextItemResponse[] }) {
       {items.map((t, i) => {
         const a = t.annotations;
         let node: React.ReactNode = t.plain_text;
-        if (a.code) node = <code className="rounded bg-line/60 px-1 font-mono text-[0.9em]">{node}</code>;
+        if (a.code) node = <code className="rounded bg-surface px-1 font-mono text-[0.9em]">{node}</code>;
         if (a.bold) node = <strong>{node}</strong>;
         if (a.italic) node = <em>{node}</em>;
         if (a.strikethrough) node = <s>{node}</s>;
@@ -111,12 +111,12 @@ function BlockView({ block: b }: { block: Block }) {
       );
     case "callout":
       return (
-        <div className={`${textCol} rounded-xl border border-line p-6 text-lg`}>
+        <div className={`${textCol} rounded-xl border border-accent-soft p-6 text-lg`}>
           <RichText items={b.callout.rich_text} />
         </div>
       );
     case "divider":
-      return <hr className={`${textCol} border-line`} />;
+      return <hr className={`${textCol} border-accent-soft`} />;
     case "image": {
       const src = imageUrl(b);
       if (!src) return null;
@@ -151,7 +151,7 @@ function BlockView({ block: b }: { block: Block }) {
     case "embed":
       return (
         <figure className="w-full">
-          <iframe src={b.embed.url} className="aspect-video w-full rounded-lg border border-line" />
+          <iframe src={b.embed.url} className="aspect-video w-full rounded-lg border border-accent-soft" />
           {caption(b.embed.caption)}
         </figure>
       );

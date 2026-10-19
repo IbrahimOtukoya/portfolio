@@ -9,7 +9,7 @@ export async function GET(
   { params }: { params: Promise<{ kind: string; id: string }> },
 ) {
   const { kind, id } = await params;
-  if (kind !== "block" && kind !== "cover" && kind !== "cover-prop") {
+  if (kind !== "block" && kind !== "cover" && kind !== "prop") {
     return new NextResponse("Not found", { status: 404 });
   }
   try {

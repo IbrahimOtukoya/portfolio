@@ -46,17 +46,20 @@ export default async function ProjectPage({ params }: Params) {
   const blocks = await getBlocks(project.id);
 
   return (
-    <article className="pt-16">
+    <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
-        <h1 className="text-4xl font-semibold tracking-tight sm:text-6xl">{project.title}</h1>
+        <h1 className="text-4xl leading-[1.1] tracking-tight text-accent sm:text-[64px]">{project.title}</h1>
         <div className="space-y-6">
-          {project.summary && <p className="text-lg leading-relaxed">{project.summary}</p>}
-          <dl className="label grid grid-cols-2 gap-4">
-            {project.role && <Meta label="Role" value={project.role} />}
+          {project.summary &&
+            project.summary.split(/\n\s*\n/).map((para) => (
+              <p key={para} className="text-lg leading-[1.35]">{para}</p>
+            ))}
+          <dl className="label grid grid-cols-3 gap-4 text-sm text-accent">
+            {project.roles.length > 0 && <Meta label="Role" value={project.roles.join(" / ")} />}
             {project.industry && <Meta label="Industry" value={project.industry} />}
-            {project.year && <Meta label="Year" value={String(project.year)} />}
+            {project.years && <Meta label="Year" value={project.years} />}
           </dl>
-          <div className="label flex flex-wrap gap-6">
+          <div className="label flex flex-wrap gap-6 text-accent">
             {project.website && (
               <a href={project.website} target="_blank" rel="noreferrer" className="hover:text-muted">
                 [ View website ]
@@ -74,7 +77,7 @@ export default async function ProjectPage({ params }: Params) {
       <Body layout={project.layout} blocks={blocks} />
 
       {prev && next && (
-        <nav className="label mt-24 grid grid-cols-2 gap-6 border-t border-line pt-8">
+        <nav className="label mt-24 grid grid-cols-2 gap-6 border-t border-accent-soft pt-8 text-accent">
           <Link href={`/${prev.slug}`} className="group">
             <span className="text-muted">← Previous</span>
             <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{prev.title}</span>
