@@ -4,7 +4,7 @@ import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
 
 // Each tile is a stack of full-card SVG frames exported from Figma (label included), 310×208.
-// On hover, frame 2 shows at once and each later frame 0.25s after the previous (see .tile-frame in globals.css).
+// On hover, frames 2-6 play 0.4s apart, then the tile returns to frame 1 (see .tile-frame in globals.css).
 const FRAMES = 6;
 
 export function Hero() {

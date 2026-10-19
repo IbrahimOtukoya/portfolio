@@ -81,15 +81,19 @@ body {
   background-size: 18px 18px;
 }
 
-/* Hero tile hover: frames 2-6 appear in turn, 0.25s apart, and hold on the last one.
-   Leaving the tile drops straight back to the first frame. */
+/* Hero tile hover: frames 2-6 play in turn, 0.4s each, then the tile returns to the first frame.
+   Like Figma's hover trigger, it plays once per hover; leaving the tile resets it. */
 .tile-frame {
   opacity: 0;
 }
 .tile:hover .tile-frame,
 .tile:focus-visible .tile-frame {
-  opacity: 1;
-  transition: opacity 0s linear calc((var(--frame) - 1) * 0.25s);
+  animation: tile-frame 0.4s step-end calc((var(--frame) - 1) * 0.4s) 1;
+}
+
+@keyframes tile-frame {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @keyframes fade {
@@ -110,7 +114,7 @@ body {
   }
   .tile:hover .tile-frame,
   .tile:focus-visible .tile-frame {
-    opacity: 0;
+    animation: none;
   }
 }
 
