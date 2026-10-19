@@ -1,14 +1,26 @@
 "use client";
 /* eslint-disable @next/next/no-img-element -- Notion images have unknown sizes and come from many hosts */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export type GalleryImage = { src: string; alt: string };
 
-/** Image grid; clicking a tile zooms it over a blurred backdrop. */
+const PER_ROW = 3;
+
+/** Justified image rows; clicking a tile zooms it over a blurred backdrop. */
 export function Gallery({ images }: { images: GalleryImage[] }) {
   const [open, setOpen] = useState<number | null>(null);
+  const [ratios, setRatios] = useState<Record<number, number>>({});
   const touchX = useRef<number | null>(null);
+  const measure = useCallback((el: HTMLImageElement, i: number) => {
+    const { naturalWidth: w, naturalHeight: h } = el;
+    if (w && h) setRatios((rs) => (rs[i] === w / h ? rs : { ...rs, [i]: w / h }));
+  }, []);
+  const rows = useMemo(() => {
+    const out: { img: GalleryImage; i: number }[][] = [];
+    images.forEach((img, i) => (i % PER_ROW === 0 ? out.push([{ img, i }]) : out[out.length - 1].push({ img, i })));
+    return out;
+  }, [images]);
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback(
@@ -33,21 +45,32 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
-        {images.map((img, i) => (
-          <button
-            key={img.src + i}
-            onClick={() => setOpen(i)}
-            className="group mb-4 block w-full cursor-zoom-in overflow-hidden rounded-lg"
-            aria-label={`Open image ${i + 1}`}
-          >
-            <img
-              src={img.src}
-              alt={img.alt}
-              loading="lazy"
-              className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
-            />
-          </button>
+      {/* Rows of three on desktop; each image's width follows its aspect ratio so a row shares one height. */}
+      <div className="flex flex-col gap-4">
+        {rows.map((row, r) => (
+          <div key={r} className="flex flex-col gap-4 lg:flex-row">
+            {row.map(({ img, i }) => (
+              <button
+                key={img.src + i}
+                onClick={() => setOpen(i)}
+                style={{ "--r": ratios[i] ?? 1 } as React.CSSProperties}
+                className="group block min-w-0 cursor-zoom-in overflow-hidden lg:[flex:var(--r)_1_0%]"
+                aria-label={`Open image ${i + 1}`}
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  loading="lazy"
+                  // Images cached before hydration never fire onLoad, so measure those on mount.
+                  ref={(el) => {
+                    if (el?.complete) measure(el, i);
+                  }}
+                  onLoad={(e) => measure(e.currentTarget, i)}
+                  className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+              </button>
+            ))}
+          </div>
         ))}
       </div>
 
@@ -69,7 +92,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             key={open}
             src={images[open].src}
             alt={images[open].alt}
-            className="max-h-full max-w-full animate-[zoom_250ms_ease-out] cursor-zoom-out rounded-lg object-contain shadow-2xl"
+            className="max-h-full max-w-full animate-[zoom_250ms_ease-out] cursor-zoom-out object-contain shadow-2xl"
           />
           <div className="label absolute inset-x-0 bottom-4 flex items-center justify-center gap-6">
             <button onClick={(e) => (e.stopPropagation(), step(-1))} className="px-3 py-2" aria-label="Previous image">

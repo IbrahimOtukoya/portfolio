@@ -45,6 +45,41 @@ export default async function ProjectPage({ params }: Params) {
   const { project, prev, next } = data;
   const blocks = await getBlocks(project.id);
 
+  if (project.layout === "Gallery") {
+    const { images } = splitImages(blocks);
+    return (
+      <div className="dot-grid px-4 pb-24 pt-12 sm:px-3">
+        <header className="label max-w-[610px] space-y-6 bg-background p-6 text-sm leading-[1.5] sm:p-8">
+          <h1 className="text-accent">{project.title}</h1>
+          {project.summary &&
+            project.summary.split(/\n\s*\n/).map((para) => (
+              <p key={para} className="text-muted">{para}</p>
+            ))}
+          {(project.printsLink || project.website) && (
+            <div className="flex flex-wrap gap-6 text-accent">
+              {project.printsLink && (
+                <a href={project.printsLink} target="_blank" rel="noreferrer" className="hover:underline">
+                  [Buy my prints]
+                </a>
+              )}
+              {project.website && (
+                <a href={project.website} target="_blank" rel="noreferrer" className="hover:underline">
+                  [View website]
+                </a>
+              )}
+            </div>
+          )}
+        </header>
+
+        <div className="mx-auto mt-14 max-w-[1200px] bg-background p-4">
+          <Gallery images={images} />
+        </div>
+
+        {prev && next && <ProjectNav prev={prev} next={next} className="mx-auto max-w-[1200px] bg-background px-4 pb-4" />}
+      </div>
+    );
+  }
+
   return (
     <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
@@ -76,18 +111,7 @@ export default async function ProjectPage({ params }: Params) {
 
       <Body layout={project.layout} blocks={blocks} />
 
-      {prev && next && (
-        <nav className="label mt-24 grid grid-cols-2 gap-6 border-t border-accent-soft pt-8 text-accent">
-          <Link href={`/${prev.slug}`} className="group">
-            <span className="text-muted">← Previous</span>
-            <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{prev.title}</span>
-          </Link>
-          <Link href={`/${next.slug}`} className="group text-right">
-            <span className="text-muted">Next →</span>
-            <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{next.title}</span>
-          </Link>
-        </nav>
-      )}
+      {prev && next && <ProjectNav prev={prev} next={next} className="mt-24" />}
     </article>
   );
 }
@@ -100,6 +124,23 @@ function Body({ layout, blocks }: { layout: string; blocks: Block[] }) {
       {intro.length > 0 && <NotionBlocks blocks={intro} />}
       {layout === "Gallery" ? <Gallery images={images} /> : <Showcase pages={images.map((i) => i.src)} />}
     </div>
+  );
+}
+
+type ProjectLink = { slug: string; title: string };
+
+function ProjectNav({ prev, next, className = "" }: { prev: ProjectLink; next: ProjectLink; className?: string }) {
+  return (
+    <nav className={`label grid grid-cols-2 gap-6 border-t border-accent-soft pt-8 text-accent ${className}`}>
+      <Link href={`/${prev.slug}`} className="group">
+        <span className="text-muted">← Previous</span>
+        <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{prev.title}</span>
+      </Link>
+      <Link href={`/${next.slug}`} className="group text-right">
+        <span className="text-muted">Next →</span>
+        <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{next.title}</span>
+      </Link>
+    </nav>
   );
 }
 

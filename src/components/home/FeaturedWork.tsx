@@ -18,14 +18,14 @@ export type FeaturedProject = {
 
 const PAGE_SIZE = 6;
 
-// Desktop columns from the final design: /PROJECTS, /ROLE, /INDUSTRY (the /SERVICES column is 247px).
+// Desktop columns from the final design: /PROJECTS, /ROLE, /INDUSTRY (the /FILTER column is 247px).
 const cols = "lg:grid-cols-[689px_276px_1fr]";
 
 export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; year: number }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
 
-  // Services double as the filter; they match Notion's Category values ignoring case.
+  // Services double as the filter categories; they match Notion's Category values ignoring case.
   const filtered = useMemo(() => {
     if (selected.length === 0) return projects;
     return projects.filter((p) => p.categories.some((c) => selected.includes(c.toLowerCase())));
@@ -47,20 +47,17 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
       </h2>
 
       <div className="mt-8 grid lg:grid-cols-[228px_1fr] lg:gap-[19px]">
-        {/* /SERVICES column */}
+        {/* /FILTER column, checkboxes as in the Figma frame */}
         <div>
-          <p className="label border-b border-accent pb-4 text-accent">/Services</p>
-          <ul className="label mt-4 flex flex-wrap gap-x-3 gap-y-3 text-sm text-label lg:mt-5">
+          <p className="label border-b border-accent pb-4 text-accent">/Filter</p>
+          <ul className="label mt-4 flex flex-wrap gap-x-6 gap-y-[13px] text-accent lg:mt-8 lg:flex-col">
             {[null, ...site.services].map((s) => {
               const active = s === null ? selected.length === 0 : selected.includes(s.toLowerCase());
               return (
                 <li key={s ?? "all"}>
-                  <button
-                    onClick={() => toggle(s)}
-                    aria-pressed={active}
-                    className={`uppercase transition-colors hover:text-accent ${active ? "text-accent underline underline-offset-4" : ""}`}
-                  >
-                    {s === null ? "All" : `/${s}`}
+                  <button onClick={() => toggle(s)} aria-pressed={active} className="flex items-center gap-3 uppercase">
+                    <span className={`size-4 rounded-[4px] border border-accent ${active ? "bg-accent" : ""}`} aria-hidden />
+                    {s ?? "All"}
                   </button>
                 </li>
               );
