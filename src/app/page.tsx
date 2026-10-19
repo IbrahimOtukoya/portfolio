@@ -11,11 +11,9 @@ export default async function Home() {
       slug: p.slug,
       title: p.title,
       summary: p.summary,
-      years: p.years,
       roles: p.roles,
-      categories: p.categories,
       industry: p.industry,
-      thumbnails: await getThumbnails(p),
+      thumbnails: await getThumbnails(p, 3),
     })),
   );
 
