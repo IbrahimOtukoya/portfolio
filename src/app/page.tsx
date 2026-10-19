@@ -12,6 +12,7 @@ export default async function Home() {
       title: p.title,
       summary: p.summary,
       roles: p.roles,
+      categories: p.categories,
       industry: p.industry,
       thumbnails: await getThumbnails(p, 3),
     })),

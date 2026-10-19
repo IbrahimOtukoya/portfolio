@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- thumbnails come from Notion with unknown sizes */
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
 
@@ -11,6 +11,7 @@ export type FeaturedProject = {
   title: string;
   summary: string;
   roles: string[];
+  categories: string[];
   industry: string | null;
   thumbnails: string[];
 };
@@ -21,9 +22,23 @@ const PAGE_SIZE = 6;
 const cols = "lg:grid-cols-[689px_276px_1fr]";
 
 export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; year: number }) {
+  const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
-  const pageCount = Math.max(1, Math.ceil(projects.length / PAGE_SIZE));
-  const shown = projects.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  // Services double as the filter; they match Notion's Category values ignoring case.
+  const filtered = useMemo(() => {
+    if (selected.length === 0) return projects;
+    return projects.filter((p) => p.categories.some((c) => selected.includes(c.toLowerCase())));
+  }, [projects, selected]);
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const shown = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
+  const toggle = (service: string | null) => {
+    setPage(0);
+    if (service === null) return setSelected([]);
+    const key = service.toLowerCase();
+    setSelected((s) => (s.includes(key) ? s.filter((x) => x !== key) : [...s, key]));
+  };
 
   return (
     <section id="work" className="scroll-mt-[70px] bg-surface px-4 pb-16 pt-16 sm:px-[23px]">
@@ -36,12 +51,20 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
         <div>
           <p className="label border-b border-accent pb-4 text-accent">/Services</p>
           <ul className="label mt-4 flex flex-wrap gap-x-3 gap-y-3 text-sm text-label lg:mt-5">
-            {site.services.map((s, i) => (
-              <li key={s}>
-                {i > 0 && "/"}
-                {s}
-              </li>
-            ))}
+            {[null, ...site.services].map((s) => {
+              const active = s === null ? selected.length === 0 : selected.includes(s.toLowerCase());
+              return (
+                <li key={s ?? "all"}>
+                  <button
+                    onClick={() => toggle(s)}
+                    aria-pressed={active}
+                    className={`uppercase transition-colors hover:text-accent ${active ? "text-accent underline underline-offset-4" : ""}`}
+                  >
+                    {s === null ? "All" : `/${s}`}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -56,7 +79,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
             {shown.map((p) => (
               <Row key={p.slug} project={p} />
             ))}
-            {shown.length === 0 && <li className="label py-8 text-accent">No projects yet.</li>}
+            {shown.length === 0 && <li className="label py-8 text-accent">No projects in this category yet.</li>}
           </ol>
         </div>
       </div>
