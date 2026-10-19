@@ -9,14 +9,15 @@ const FRAMES = 6;
 
 export function Hero() {
   return (
-    <section className="dot-grid relative px-4 pb-24 pt-12 sm:pb-[164px] sm:pt-[88px]">
+    <section className="dot-grid relative px-4 pb-16 pt-6 sm:pb-[164px] sm:pt-[88px]">
       <div className="mx-auto flex w-full max-w-[960px] flex-col">
-        <div className="label flex w-fit flex-col gap-2 bg-background p-4 text-accent">
-          <h1 className="text-title">{site.hero.headline}</h1>
-          <p className="text-sm sm:text-base">{site.hero.role}</p>
+        {/* On phones the bio follows the title card directly and the tiles come last. */}
+        <div className="label flex w-full flex-col gap-2 bg-background px-2 pb-3 pt-6 text-accent sm:w-fit sm:p-4">
+          <h1 className="text-base sm:text-title">{site.hero.headline}</h1>
+          <p className="text-xs sm:text-base">{site.hero.role}</p>
         </div>
 
-        <div className="mt-[50px] grid gap-[21px] sm:grid-cols-3">
+        <div className="order-3 mt-6 grid gap-6 sm:order-none sm:mt-[50px] sm:grid-cols-3 sm:gap-[21px]">
           {site.tiles.map((t) => {
             const external = t.href.startsWith("http");
             const Tag = external ? "a" : Link;
@@ -42,8 +43,8 @@ export function Hero() {
           })}
         </div>
 
-        <div className="mt-[21px] flex flex-col items-start gap-6 bg-background p-6 sm:p-8">
-          <p className="text-2xl text-muted">{site.hero.bio}</p>
+        <div className="flex flex-col items-start gap-6 bg-background px-3 pb-6 pt-4 sm:mt-[21px] sm:p-8">
+          <p className="text-[1.0625rem] leading-[1.35] text-muted sm:text-2xl">{site.hero.bio}</p>
           <p className="label flex items-center gap-2.5 bg-chip px-2 py-2 text-xs text-label">
             <PixelIcon name="pin" />[{site.location}]
           </p>

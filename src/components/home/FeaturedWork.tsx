@@ -42,8 +42,8 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
   };
 
   return (
-    <section id="work" className="scroll-mt-[70px] bg-surface px-4 pb-16 pt-16 sm:px-[23px]">
-      <h2 className="flex items-start gap-1 text-display text-accent">
+    <section id="work" className="scroll-mt-[70px] bg-surface px-[30px] pb-16 pt-6 sm:px-[23px] sm:pt-16">
+      <h2 className="flex items-start gap-1 text-[2rem] text-accent sm:text-display">
         Featured Work<span className="mt-3 text-base">©{year}</span>
       </h2>
 
@@ -116,21 +116,28 @@ function Row({ project: p }: { project: FeaturedProject }) {
   );
 
   return (
-    <li className="flex flex-col gap-6 border-b border-label py-10 last:border-b-0">
+    <li className="flex flex-col gap-6 border-b border-label py-8 last:border-b-0 sm:py-10">
+      {/* Phones show just the first image, above the title */}
+      {thumbs[0] && (
+        <Link href={href} className="sm:hidden" tabIndex={-1} aria-hidden>
+          <img src={thumbs[0]} alt="" loading="lazy" className="w-full" />
+        </Link>
+      )}
+
       {/* Title, role and industry share one line on desktop */}
-      <div className={`grid items-center gap-3 lg:gap-0 ${cols}`}>
+      <div className={`grid items-center gap-4 lg:gap-0 ${cols}`}>
         <h3 className="text-title tracking-[-0.01em] text-muted lg:pr-6">
           <Link href={href} className="hover:text-accent">
             {p.title}
           </Link>
         </h3>
-        <p className="label flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-[#a3a3a3] lg:contents lg:text-base">
+        <p className="label flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.625rem] text-[#a3a3a3] sm:text-sm lg:contents lg:text-base">
           {roles && <span className="lg:pr-6">{roles}</span>}
           {industry && <span>{industry}</span>}
         </p>
       </div>
 
-      <div className="space-y-[1.35em] leading-[1.35] text-label text-lg">
+      <div className="space-y-[1.35em] text-sm leading-[1.35] text-label sm:text-lg">
         {p.summary.split(/\n\s*\n/).map((para) => (
           <p key={para}>{para}</p>
         ))}
@@ -139,7 +146,7 @@ function Row({ project: p }: { project: FeaturedProject }) {
       {thumbs.length > 0 && (
         // Images keep their proportions and share one height. A full row of three is
         // stretched to the column width; shorter rows use a fixed height instead.
-        <Link href={href} className="flex flex-col gap-4 sm:flex-row sm:gap-[26px]" tabIndex={-1} aria-hidden>
+        <Link href={href} className="hidden gap-[26px] sm:flex" tabIndex={-1} aria-hidden>
           {thumbs.map((src, i) => (
             <img
               key={src}
@@ -150,8 +157,8 @@ function Row({ project: p }: { project: FeaturedProject }) {
               style={{ "--r": ratio(i) } as React.CSSProperties}
               className={
                 thumbs.length === 3
-                  ? "w-full min-w-0 sm:[flex:var(--r)_1_0%]"
-                  : "w-full sm:h-[216px] sm:w-auto sm:max-w-full"
+                  ? "min-w-0 [flex:var(--r)_1_0%]"
+                  : "h-[216px] w-auto max-w-full"
               }
             />
           ))}
