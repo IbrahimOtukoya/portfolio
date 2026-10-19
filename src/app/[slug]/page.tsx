@@ -83,7 +83,7 @@ export default async function ProjectPage({ params }: Params) {
   return (
     <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
-        <h1 className="text-4xl leading-[1.1] tracking-tight text-accent sm:text-[64px]">{project.title}</h1>
+        <h1 className="text-display leading-[1.1] tracking-tight text-accent">{project.title}</h1>
         <div className="space-y-6">
           {project.summary &&
             project.summary.split(/\n\s*\n/).map((para) => (

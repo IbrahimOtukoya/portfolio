@@ -15,7 +15,7 @@ export function Hero() {
     <section className="dot-grid relative px-4 pb-24 pt-12 sm:pb-[164px] sm:pt-[92px]">
       <div className="mx-auto flex w-full max-w-[978px] flex-col gap-[60px]">
         <div className="label flex w-fit flex-col gap-2 bg-background p-6 text-accent">
-          <h1 className="text-lg sm:text-2xl">{site.hero.headline}</h1>
+          <h1 className="text-2xl">{site.hero.headline}</h1>
           <p className="text-sm sm:text-base">{site.hero.role}</p>
         </div>
 
@@ -32,7 +32,7 @@ export function Hero() {
                 className="group relative block h-[208px] overflow-clip bg-background"
               >
                 <span
-                  className="label absolute left-6 top-6 bg-surface p-[3.5px] text-[14.185px]"
+                  className="label absolute left-6 top-6 bg-surface p-[3.5px] text-[0.8866rem]"
                   style={{ color: t.color }}
                 >
                   {t.label}
@@ -50,7 +50,7 @@ export function Hero() {
         </div>
 
         <div className="flex flex-col items-start gap-7 bg-background p-6">
-          <p className="text-lg leading-[1.35] text-muted sm:text-2xl">{site.hero.bio}</p>
+          <p className="text-2xl text-muted">{site.hero.bio}</p>
           <p className="label flex items-center gap-1 bg-chip px-3 py-2 text-xs text-accent">
             <PixelIcon name="pin" />[{site.location}]
           </p>

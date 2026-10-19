@@ -43,7 +43,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
 
   return (
     <section id="work" className="scroll-mt-[70px] bg-surface px-4 pb-16 pt-16 sm:px-[23px]">
-      <h2 className="flex items-start gap-1 text-5xl text-accent sm:text-[64px] sm:leading-[83px]">
+      <h2 className="flex items-start gap-1 text-display text-accent">
         Featured Work<span className="mt-3 text-base">©{year}</span>
       </h2>
 
@@ -119,7 +119,7 @@ function Row({ project: p }: { project: FeaturedProject }) {
     <li className="flex flex-col gap-6 border-b border-label py-10 last:border-b-0">
       {/* Title, role and industry share one line on desktop */}
       <div className={`grid items-center gap-3 lg:gap-0 ${cols}`}>
-        <h3 className="text-2xl leading-[1.25] tracking-[-0.01em] text-muted sm:text-[32px] lg:pr-6">
+        <h3 className="text-title tracking-[-0.01em] text-muted lg:pr-6">
           <Link href={href} className="hover:text-accent">
             {p.title}
           </Link>
@@ -130,7 +130,7 @@ function Row({ project: p }: { project: FeaturedProject }) {
         </p>
       </div>
 
-      <div className="space-y-[1.35em] leading-[1.35] text-label sm:text-lg">
+      <div className="space-y-[1.35em] leading-[1.35] text-label text-lg">
         {p.summary.split(/\n\s*\n/).map((para) => (
           <p key={para}>{para}</p>
         ))}

@@ -87,13 +87,13 @@ function BlockView({ block: b }: { block: Block }) {
       );
     case "heading_1":
       return (
-        <h2 className={`${textCol} mt-10 text-3xl font-medium tracking-tight sm:text-4xl`}>
+        <h2 className={`${textCol} mt-10 text-4xl font-medium tracking-tight`}>
           <RichText items={b.heading_1.rich_text} />
         </h2>
       );
     case "heading_2":
       return (
-        <h2 className={`${textCol} mt-10 text-2xl font-medium tracking-tight sm:text-3xl`}>
+        <h2 className={`${textCol} mt-10 text-3xl font-medium tracking-tight`}>
           <RichText items={b.heading_2.rich_text} />
         </h2>
       );
