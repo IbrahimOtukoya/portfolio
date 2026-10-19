@@ -3,12 +3,9 @@ import Link from "next/link";
 import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
 
-// Each tile is one full-card SVG exported from Figma (label included), 310×208.
-const art: Record<string, string> = {
-  Work: "/pixel/work.svg",
-  Thoughts: "/pixel/thoughts.svg",
-  Experiments: "/pixel/experiments.svg",
-};
+// Each tile is a stack of full-card SVG frames exported from Figma (label included), 310×208.
+// On hover, frame 2 shows at once and each later frame 0.25s after the previous (see .tile-frame in globals.css).
+const FRAMES = 6;
 
 export function Hero() {
   return (
@@ -29,9 +26,17 @@ export function Hero() {
                 href={t.href}
                 {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
                 aria-label={t.label}
-                className="block bg-background transition-transform duration-300 hover:-translate-y-1"
+                className="tile relative block aspect-[310/208] bg-background"
               >
-                <img src={art[t.label]} alt="" className="aspect-[310/208] w-full" />
+                {Array.from({ length: FRAMES }, (_, i) => (
+                  <img
+                    key={i}
+                    src={`/pixel/tiles/${t.label.toLowerCase()}-${i + 1}.svg`}
+                    alt=""
+                    style={{ "--frame": i } as React.CSSProperties}
+                    className={`absolute inset-0 size-full ${i > 0 ? "tile-frame" : ""}`}
+                  />
+                ))}
               </Tag>
             );
           })}
