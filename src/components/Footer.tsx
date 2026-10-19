@@ -17,14 +17,9 @@ export function Footer() {
           </p>
         </div>
 
-        {/* Pixel portrait over its grid, centred as in the design (480×744 within a 768px-wide grid). */}
-        <div className="relative mx-auto aspect-[768/768] w-full max-w-[768px] lg:absolute lg:left-1/2 lg:top-[103px] lg:w-[768px] lg:-translate-x-1/2">
-          <img src="/pixel/portrait-grid.svg" alt="" className="absolute inset-0 size-full opacity-25" />
-          <img
-            src="/pixel/portrait.svg"
-            alt="Pixel-art portrait of Ibrahim Otukoya"
-            className="absolute left-1/2 top-0 h-[96.875%] -translate-x-1/2"
-          />
+        {/* Pixel portrait with its grid, one 769×769 SVG from the Figma file, centred as in the design. */}
+        <div className="relative mx-auto w-full max-w-[769px] lg:absolute lg:left-1/2 lg:top-[103px] lg:w-[769px] lg:-translate-x-1/2">
+          <img src="/pixel/footer-portrait.svg" alt="Pixel-art portrait of Ibrahim Otukoya" className="aspect-square w-full" />
         </div>
 
         <div className="relative z-10 flex items-end justify-between gap-6 lg:absolute lg:inset-x-6 lg:bottom-8">
