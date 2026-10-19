@@ -3,11 +3,11 @@ import Link from "next/link";
 import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
 
-// Where each tile's illustration sits inside its 310×208 card (from Figma 765:1058, 765:1585, 773:746).
-const art: Record<string, { src: string; className: string }> = {
-  Work: { src: "/pixel/work.svg", className: "left-[22.58%] right-[12.26%] top-[30.77%] bottom-0" },
-  Thoughts: { src: "/pixel/thoughts.svg", className: "left-1/2 bottom-[0.6px] h-[141.848px] w-[198.587px] -translate-x-1/2" },
-  Experiments: { src: "/pixel/experiments.svg", className: "left-[42.55px] bottom-[0.26px] h-[141.848px] w-[226.957px]" },
+// Each tile is one full-card SVG exported from Figma (label included), 310×208.
+const art: Record<string, string> = {
+  Work: "/pixel/work.svg",
+  Thoughts: "/pixel/thoughts.svg",
+  Experiments: "/pixel/experiments.svg",
 };
 
 export function Hero() {
@@ -21,7 +21,6 @@ export function Hero() {
 
         <div className="grid gap-[21px] sm:grid-cols-3">
           {site.tiles.map((t) => {
-            const a = art[t.label];
             const external = t.href.startsWith("http");
             const Tag = external ? "a" : Link;
             return (
@@ -29,21 +28,10 @@ export function Hero() {
                 key={t.label}
                 href={t.href}
                 {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-                className="group relative block h-[208px] overflow-clip bg-background"
+                aria-label={t.label}
+                className="block bg-background transition-transform duration-300 hover:-translate-y-1"
               >
-                <span
-                  className="label absolute left-6 top-6 bg-surface p-[3.5px] text-[0.8866rem]"
-                  style={{ color: t.color }}
-                >
-                  {t.label}
-                </span>
-                {a && (
-                  <img
-                    src={a.src}
-                    alt=""
-                    className={`absolute transition-transform duration-300 group-hover:-translate-y-1 ${a.className}`}
-                  />
-                )}
+                <img src={art[t.label]} alt="" className="aspect-[310/208] w-full" />
               </Tag>
             );
           })}

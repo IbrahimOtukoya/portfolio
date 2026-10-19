@@ -15,9 +15,9 @@ export const site = {
   },
   // Hero tiles; illustrations live in /public/pixel.
   tiles: [
-    { label: "Work", href: "/#work", color: "var(--label)" },
-    { label: "Thoughts", href: "https://ibrahimotukoya.substack.com/", color: "var(--orange)" },
-    { label: "Experiments", href: "/archive", color: "var(--sky)" },
+    { label: "Work", href: "/#work" },
+    { label: "Thoughts", href: "https://ibrahimotukoya.substack.com/" },
+    { label: "Experiments", href: "/archive" },
   ],
   services: ["Branding", "Illustration", "Editorial", "Graphic design", "Motion design", "Web design"],
   socials: [
