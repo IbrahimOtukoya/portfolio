@@ -5,6 +5,7 @@ import { NotionBlocks } from "@/components/NotionBlocks";
 import { Gallery } from "@/components/layouts/Gallery";
 import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { Showcase } from "@/components/layouts/Showcase";
+import { CaseStudy } from "@/components/layouts/CaseStudy";
 import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
 
 export const revalidate = 300;
@@ -68,6 +69,8 @@ export default async function ProjectPage({ params }: Params) {
     );
   }
 
+  if (project.layout === "Case study") return <CaseStudy project={project} blocks={blocks} prev={prev} next={next} />;
+
   return (
     <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
@@ -105,7 +108,6 @@ export default async function ProjectPage({ params }: Params) {
 }
 
 function Body({ layout, blocks }: { layout: string; blocks: Block[] }) {
-  if (layout === "Case study") return <NotionBlocks blocks={blocks} />;
   const { intro, images } = splitImages(blocks);
   return (
     <div className="flex flex-col gap-12">
