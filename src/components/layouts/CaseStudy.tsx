@@ -33,6 +33,13 @@ export function CaseStudy({
     }
   }
 
+  // Opening text sits beside the meta column; everything from the first image on runs below both.
+  const isMedia = (b: Block) =>
+    ["image", "video", "embed", "column_list"].includes(b.type) || plain(b) === "selected projects";
+  const split = body.findIndex(isMedia);
+  const opening = split === -1 ? body : body.slice(0, split);
+  const rest = split === -1 ? [] : body.slice(split);
+
   return (
     <article className="mx-auto w-full max-w-[1264px] px-6 pb-24 pt-10 sm:pt-[69px]">
       <div className="grid gap-6 lg:grid-cols-[123fr_1093fr] lg:gap-0">
@@ -43,10 +50,11 @@ export function CaseStudy({
         {cover && <img src={cover} alt="" className="aspect-[1093/464] w-full object-cover" />}
       </div>
 
-      {/* The meta column floats beside the opening text on desktop, as in the Figma frame. */}
-      <div className="relative mt-10 lg:mt-12">
-        <h1 className={`${textCol} text-title font-semibold leading-[1.35] tracking-[-0.01em] text-accent`}>{project.title}</h1>
-        <aside className="label mt-8 space-y-8 text-[#1a1a1a] lg:absolute lg:mt-0 lg:left-0 lg:top-[13px] lg:w-[30.51%] lg:pl-[10.12%]">
+      <div className="mt-10 grid lg:mt-12 lg:grid-cols-[371fr_845fr] lg:grid-rows-[auto_1fr]">
+        <h1 className="text-title font-semibold leading-[1.35] tracking-[-0.01em] text-accent lg:col-start-2 lg:w-[85.44%]">
+          {project.title}
+        </h1>
+        <aside className="label mt-8 space-y-8 self-start text-[#1a1a1a] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-[13px] lg:pl-[33.15%]">
           <dl className="grid grid-cols-3 gap-4 lg:block lg:space-y-8">
             {project.years && <Meta label="Year" value={project.years} />}
             {project.roles.length > 0 && <Meta label="Role" value={project.roles.join(" / ")} />}
@@ -64,8 +72,11 @@ export function CaseStudy({
             </a>
           )}
         </aside>
-        <CaseStudyBody blocks={body} />
+        <div className="lg:col-start-2 lg:row-start-2">
+          <CaseStudyBody blocks={opening} col="lg:w-[85.44%]" />
+        </div>
       </div>
+      <CaseStudyBody blocks={rest} />
 
       {prev && next && <PagerNav prev={prev} next={next} />}
     </article>
@@ -86,7 +97,7 @@ const plain = (b: Block) =>
   b.type === "heading_1" ? b.heading_1.rich_text.map((t) => t.plain_text).join("").trim().toLowerCase() : "";
 
 /** Lays out the page body: text in the 722px column, images across the full width. */
-function CaseStudyBody({ blocks }: { blocks: Block[] }) {
+function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: string }) {
   const out: React.ReactNode[] = [];
   let prevKind: "text" | "heading" | "media" | null = null;
 
@@ -141,7 +152,7 @@ function CaseStudyBody({ blocks }: { blocks: Block[] }) {
       out.push(
         <List
           key={b.id}
-          className={`${gap("text")} ${textCol} ${List === "ul" ? "list-disc" : "list-decimal"} space-y-[1.35em] ps-[30px] text-xl text-muted`}
+          className={`${gap("text")} ${col} ${List === "ul" ? "list-disc" : "list-decimal"} space-y-[1.35em] ps-[30px] text-xl text-muted`}
         >
           {items.map((item) => (
             <li key={item.id}>
@@ -158,7 +169,7 @@ function CaseStudyBody({ blocks }: { blocks: Block[] }) {
       case "paragraph":
         if (b.paragraph.rich_text.length === 0) continue;
         out.push(
-          <p key={b.id} className={`${gap("text")} ${textCol} whitespace-pre-line text-xl text-muted`}>
+          <p key={b.id} className={`${gap("text")} ${col} whitespace-pre-line text-xl text-muted`}>
             {text(b.paragraph.rich_text)}
           </p>,
         );
@@ -168,7 +179,7 @@ function CaseStudyBody({ blocks }: { blocks: Block[] }) {
       case "heading_3": {
         const rich = b.type === "heading_1" ? b.heading_1.rich_text : b.type === "heading_2" ? b.heading_2.rich_text : b.heading_3.rich_text;
         out.push(
-          <h2 key={b.id} className={`${gap("heading")} ${textCol} text-heading font-semibold tracking-[-0.01em] text-muted`}>
+          <h2 key={b.id} className={`${gap("heading")} ${col} text-heading font-semibold tracking-[-0.01em] text-muted`}>
             {text(rich)}
           </h2>,
         );
@@ -176,7 +187,7 @@ function CaseStudyBody({ blocks }: { blocks: Block[] }) {
       }
       case "quote":
         out.push(
-          <blockquote key={b.id} className={`${gap("text")} ${textCol} border-l-2 border-accent pl-6 text-2xl text-muted`}>
+          <blockquote key={b.id} className={`${gap("text")} ${col} border-l-2 border-accent pl-6 text-2xl text-muted`}>
             {text(b.quote.rich_text)}
           </blockquote>,
         );
@@ -204,7 +215,7 @@ function CaseStudyBody({ blocks }: { blocks: Block[] }) {
         break;
       }
       case "divider":
-        out.push(<hr key={b.id} className={`${gap("text")} ${textCol} border-[#d9d9d9]`} />);
+        out.push(<hr key={b.id} className={`${gap("text")} ${col} border-[#d9d9d9]`} />);
         break;
       default:
         break;
