@@ -22,20 +22,19 @@ export function CaseStudy({
   prev: ProjectLink | null;
   next: ProjectLink | null;
 }) {
-  // The page cover leads the case study; without one, the first image in the body takes its place.
+  // A page body that opens with an image uses it as the banner (as on the Framer site);
+  // otherwise the Notion page cover, then the first image anywhere in the body.
   let cover = project.cover;
   let body = blocks;
-  if (!cover) {
-    const first = blocks.findIndex((b) => b.type === "image");
-    if (first !== -1) {
-      cover = imageUrl(blocks[first]);
-      body = blocks.filter((_, i) => i !== first);
-    }
+  const first = blocks[0]?.type === "image" ? 0 : cover ? -1 : blocks.findIndex((b) => b.type === "image");
+  if (first !== -1) {
+    cover = imageUrl(blocks[first]) ?? cover;
+    body = blocks.filter((_, i) => i !== first);
   }
 
   // Opening text sits beside the meta column; everything from the first image on runs below both.
   const isMedia = (b: Block) =>
-    ["image", "video", "embed", "column_list"].includes(b.type) || plain(b) === "selected projects";
+    ["image", "video", "embed", "column_list"].includes(b.type) || isSelected(b);
   const split = body.findIndex(isMedia);
   const opening = split === -1 ? body : body.slice(0, split);
   const rest = split === -1 ? [] : body.slice(split);
@@ -93,16 +92,34 @@ function Meta({ label, value }: { label: string; value: string }) {
 }
 
 const text = (items: Parameters<typeof RichText>[0]["items"]) => <RichText items={items} />;
-const plain = (b: Block) =>
-  b.type === "heading_1" ? b.heading_1.rich_text.map((t) => t.plain_text).join("").trim().toLowerCase() : "";
+const plainText = (items: Parameters<typeof RichText>[0]["items"]) => items.map((t) => t.plain_text).join("").trim();
+const headingText = (b: Block) =>
+  b.type === "heading_1"
+    ? plainText(b.heading_1.rich_text)
+    : b.type === "heading_2"
+      ? plainText(b.heading_2.rich_text)
+      : b.type === "heading_3"
+        ? plainText(b.heading_3.rich_text)
+        : "";
+const isHeading = (b: Block) => b.type === "heading_1" || b.type === "heading_2" || b.type === "heading_3";
+/** "Selected projects" (followed by toggles) or "Selected projects: The Compass" (followed by its blocks). */
+const isSelected = (b: Block) => /^selected projects\b/i.test(headingText(b));
+const imagesIn = (bs: Block[]): string[] =>
+  bs.flatMap((k) => {
+    if (k.type === "column_list" || k.type === "column") return imagesIn(k.children ?? []);
+    const src = imageUrl(k);
+    return src ? [src] : [];
+  });
+const paragraphsIn = (bs: Block[]) =>
+  bs.flatMap((k) => (k.type === "paragraph" && k.paragraph.rich_text.length ? [plainText(k.paragraph.rich_text)] : []));
 
 /** Lays out the page body: text in the 722px column, images across the full width. */
 function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: string }) {
   const out: React.ReactNode[] = [];
-  let prevKind: "text" | "heading" | "media" | null = null;
+  let prevKind: "text" | "heading" | "subheading" | "media" | null = null;
 
   // Space above a block depends on what came before it, as in the Figma frame.
-  const gap = (kind: "text" | "heading" | "media") => {
+  const gap = (kind: "text" | "heading" | "subheading" | "media") => {
     const g =
       prevKind === null
         ? kind === "media" ? "mt-12" : "mt-6"
@@ -112,7 +129,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
             ? "mt-12 sm:mt-16"
             : kind === "heading"
               ? "mt-10 sm:mt-12"
-              : prevKind === "heading" ? "mt-4" : "mt-[1.35em]";
+              : prevKind === "heading" ? "mt-4" : prevKind === "subheading" ? "mt-0" : "mt-[1.35em]";
     prevKind = kind;
     return g;
   };
@@ -120,24 +137,25 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
   for (let i = 0; i < blocks.length; i++) {
     const b = blocks[i];
 
-    // A "Selected projects" heading turns the toggles after it into the carousel.
-    if (plain(b) === "selected projects") {
+    // "Selected projects" headings become the carousel. Either one heading followed by a toggle per
+    // project, or one "Selected projects: Name" heading per project followed by its text and images.
+    if (isSelected(b)) {
       const items: SelectedProject[] = [];
-      while (blocks[i + 1]?.type === "toggle") {
-        const t = blocks[++i];
-        if (t.type !== "toggle") break;
-        const kids = t.children ?? [];
-        items.push({
-          id: t.id,
-          label: t.toggle.rich_text.map((r) => r.plain_text).join(""),
-          description: kids.flatMap((k) =>
-            k.type === "paragraph" && k.paragraph.rich_text.length ? [k.paragraph.rich_text.map((r) => r.plain_text).join("")] : [],
-          ),
-          images: kids.flatMap((k) => {
-            const src = imageUrl(k);
-            return src ? [src] : [];
-          }),
-        });
+      i--;
+      while (blocks[i + 1] && isSelected(blocks[i + 1])) {
+        const h = blocks[++i];
+        const name = headingText(h).replace(/^selected projects\s*:?\s*/i, "");
+        if (name) {
+          const kids: Block[] = [];
+          while (blocks[i + 1] && !isHeading(blocks[i + 1])) kids.push(blocks[++i]);
+          items.push({ id: h.id, label: name, description: paragraphsIn(kids), images: imagesIn(kids) });
+        }
+        while (blocks[i + 1]?.type === "toggle") {
+          const t = blocks[++i];
+          if (t.type !== "toggle") break;
+          const kids = t.children ?? [];
+          items.push({ id: t.id, label: plainText(t.toggle.rich_text), description: paragraphsIn(kids), images: imagesIn(kids) });
+        }
       }
       if (items.length) out.push(<SelectedProjects key={b.id} items={items} className={gap("media")} />);
       continue;
@@ -174,10 +192,17 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
           </p>,
         );
         break;
+      case "heading_3":
+        // Small bold lead-in, like the numbered objectives in the Figma frame.
+        out.push(
+          <h3 key={b.id} className={`${gap("subheading")} ${col} text-xl font-bold text-muted`}>
+            {text(b.heading_3.rich_text)}
+          </h3>,
+        );
+        break;
       case "heading_1":
-      case "heading_2":
-      case "heading_3": {
-        const rich = b.type === "heading_1" ? b.heading_1.rich_text : b.type === "heading_2" ? b.heading_2.rich_text : b.heading_3.rich_text;
+      case "heading_2": {
+        const rich = b.type === "heading_1" ? b.heading_1.rich_text : b.heading_2.rich_text;
         out.push(
           <h2 key={b.id} className={`${gap("heading")} ${col} text-heading font-semibold tracking-[-0.01em] text-muted`}>
             {text(rich)}

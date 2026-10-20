@@ -17,7 +17,10 @@ export function SelectedProjects({ items, className = "" }: { items: SelectedPro
   return (
     <section className={className} aria-roledescription="carousel" aria-label="Selected projects">
       <div className="flex items-center justify-between">
-        <h2 className="label py-2 text-accent">Selected projects</h2>
+        <h2 className="label flex items-center gap-2 py-2 text-accent">
+          <PixelIcon name="heart" />
+          Selected projects
+        </h2>
         {items.length > 1 && (
           <div className="flex items-center gap-8">
             <button onClick={() => go(-1)} aria-label="Previous project" className="p-1">

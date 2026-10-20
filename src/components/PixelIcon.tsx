@@ -25,6 +25,13 @@ const icons = {
       [4, 12, 4, 4, O], [4, 4, 4, 4, R], [8, 4, 4, 4, O],
     ],
   },
+  // Heart before "SELECTED PROJECTS", 16×16 (orange, as on the Framer site)
+  heart: {
+    size: [16, 16],
+    rects: [
+      [2, 2, 4, 2, O], [10, 2, 4, 2, O], [0, 4, 16, 4, O], [2, 8, 12, 2, O], [4, 10, 8, 2, O], [6, 12, 4, 2, O],
+    ],
+  },
   // Pagination chevron, 12×12, pointing left (Figma 573:177)
   chevron: {
     size: [12, 12],
