@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NotionBlocks } from "@/components/NotionBlocks";
 import { Gallery } from "@/components/layouts/Gallery";
 import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { Showcase } from "@/components/layouts/Showcase";
 import { CaseStudy } from "@/components/layouts/CaseStudy";
+import { PagerNav } from "@/components/PagerNav";
 import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
 
 export const revalidate = 300;
@@ -64,7 +64,7 @@ export default async function ProjectPage({ params }: Params) {
           <Gallery images={images} />
         </div>
 
-        {prev && next && <ProjectNav prev={prev} next={next} className="mx-auto max-w-[1200px] bg-background px-4 pb-4" />}
+        {prev && next && <PagerNav prev={prev} next={next} className="mx-auto mt-16 w-fit bg-background px-6 py-4 sm:mt-24" />}
       </div>
     );
   }
@@ -102,7 +102,7 @@ export default async function ProjectPage({ params }: Params) {
 
       <Body layout={project.layout} blocks={blocks} />
 
-      {prev && next && <ProjectNav prev={prev} next={next} className="mt-24" />}
+      {prev && next && <PagerNav prev={prev} next={next} />}
     </article>
   );
 }
@@ -114,23 +114,6 @@ function Body({ layout, blocks }: { layout: string; blocks: Block[] }) {
       {intro.length > 0 && <NotionBlocks blocks={intro} />}
       {layout === "Gallery" ? <Gallery images={images} /> : <Showcase pages={images.map((i) => i.src)} />}
     </div>
-  );
-}
-
-type ProjectLink = { slug: string; title: string };
-
-function ProjectNav({ prev, next, className = "" }: { prev: ProjectLink; next: ProjectLink; className?: string }) {
-  return (
-    <nav className={`label grid grid-cols-2 gap-6 border-t border-accent-soft pt-8 text-accent ${className}`}>
-      <Link href={`/${prev.slug}`} className="group">
-        <span className="text-muted">← Previous</span>
-        <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{prev.title}</span>
-      </Link>
-      <Link href={`/${next.slug}`} className="group text-right">
-        <span className="text-muted">Next →</span>
-        <span className="mt-2 block font-sans text-base normal-case tracking-normal group-hover:underline">{next.title}</span>
-      </Link>
-    </nav>
   );
 }
 

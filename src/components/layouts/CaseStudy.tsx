@@ -1,6 +1,5 @@
 /* eslint-disable @next/next/no-img-element -- Notion images have unknown sizes and come from many hosts */
-import Link from "next/link";
-import { PixelIcon } from "@/components/PixelIcon";
+import { PagerNav } from "@/components/PagerNav";
 import { RichText } from "@/components/NotionBlocks";
 import { SelectedProjects, type SelectedProject } from "@/components/layouts/SelectedProjects";
 import { imageUrl, type Block, type Project } from "@/lib/notion";
@@ -253,23 +252,5 @@ function Media({ block: b }: { block: Block }) {
         </figcaption>
       )}
     </figure>
-  );
-}
-
-function PagerNav({ prev, next }: { prev: ProjectLink; next: ProjectLink }) {
-  return (
-    <nav aria-label="More case studies" className="label mt-24 flex items-center justify-center gap-8 text-xs leading-4 text-accent sm:mt-32">
-      <Link href={`/${prev.slug}`} title={prev.title} className="flex items-center gap-2 hover:underline">
-        <PixelIcon name="chevron" />
-        Previous
-      </Link>
-      <Link href="/#work" className="hover:underline">
-        Index
-      </Link>
-      <Link href={`/${next.slug}`} title={next.title} className="flex items-center gap-2 hover:underline">
-        Next
-        <PixelIcon name="chevron" flip />
-      </Link>
-    </nav>
   );
 }
