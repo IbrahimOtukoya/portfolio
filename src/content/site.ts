@@ -30,21 +30,28 @@ export const site = {
 };
 
 export const about = {
-  headline: "Ibrahim Otukoya is a brand designer, based in Lagos, Nigeria.",
+  headline: "Ibrahim Otukoya is a brand designer based in Lagos, Nigeria",
+  // Shown on two lines in the design.
+  headlineLines: ["Ibrahim Otukoya is a brand designer", "based in Lagos, Nigeria"],
   portrait: "https://framerusercontent.com/images/zamjyyflZPpwvsGH3Aty1JLk2bM.png",
+  // The blue opening lines, then the grey paragraphs.
+  // Each inner list is one paragraph; its sentences sit on their own lines on wider screens.
+  intro: [
+    ["I am many things. Being a designer is merely one of them.", "It\u2019s probably the reason you are here, and so, it's the part of me we'll discuss."],
+    ["I am a designer. A brand designer."],
+  ],
   bio: [
-    "I am many things. Being a designer is merely one of them. It's probably the reason you are here, and so, it's the part of me we'll discuss. I am a designer. A brand designer.",
-    "For the last 7 years, I have designed—almost everyday. I have partnered with diverse individuals and teams to craft brands that address customer pain points, meet their needs, and deliver exceptional experiences.",
+    "For the last 7 years, I have designed\u2014almost everyday. I have partnered with diverse individuals and teams to craft brands that address customer pain points, meet their needs, and deliver exceptional experiences.",
     "For the last 1 year and some, I have designed at Moniepoint. Before that, I designed for two years at Anchor, and before that, I just designed...",
     "Writer, reader, thinker, yapper, walker, movie-watcher, swimmer, Duck-lover. When I am not a being a designer, these are some of the things I am.",
   ],
   experience: [
-    { role: "Brand Designer", company: "Moniepoint", years: "2025 – Present" },
-    { role: "Brand Designer", company: "Anchor", years: "2023 – 2025" },
-    { role: "Brand Designer (Contract)", company: "Caravan", years: "2022 – 2023" },
+    { role: "Brand Designer", company: "Moniepoint", years: "2025-Present" },
+    { role: "Brand Designer", company: "Anchor", years: "2023-2025" },
+    { role: "Brand Designer (Contract)", company: "Caravan", years: "2022-2023" },
     { role: "User Experience Researcher (Contract)", company: "Thrill DAO", years: "2022" },
-    { role: "Creative Designer", company: "Musterpoint Limited", years: "2020 – 2021" },
-    { role: "Freelance Brand Designer", company: null, years: "2018 – Present" },
+    { role: "Creative Designer", company: "Musterpoint Limited", years: "2020-2021" },
+    { role: "Freelance Brand Designer", company: null, years: "2018-Present" },
   ],
   reading: [
     "https://framerusercontent.com/images/VXOjgSRTWEEeOj8Ch9COF7Whwc.png",
