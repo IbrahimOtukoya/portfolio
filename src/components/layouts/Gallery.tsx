@@ -6,7 +6,7 @@ import { useImageRatios } from "@/hooks/useImageRatios";
 
 export type GalleryImage = { src: string; alt: string };
 
-const PER_ROW = 3;
+const PER_ROW = 4;
 
 /** Justified image rows; clicking a tile zooms it over a blurred backdrop. */
 export function Gallery({ images }: { images: GalleryImage[] }) {
@@ -42,7 +42,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      {/* Rows of three on desktop; each image's width follows its aspect ratio so a row shares one height. */}
+      {/* Rows of four on desktop; each image's width follows its aspect ratio so a row shares one height. */}
       <div className="flex flex-col gap-4">
         {rows.map((row, r) => (
           <div key={r} className="flex flex-col gap-4 lg:flex-row">
@@ -63,6 +63,17 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
                 />
               </button>
             ))}
+            {/* A short last row keeps the size of a full one: empty slots stand in for the missing images. */}
+            {rows.length > 1 &&
+              row.length < PER_ROW &&
+              Array.from({ length: PER_ROW - row.length }, (_, k) => (
+                <span
+                  key={`gap${k}`}
+                  aria-hidden
+                  style={{ "--r": row.reduce((sum, { i }) => sum + Number(ratio(i)), 0) / row.length } as React.CSSProperties}
+                  className="hidden lg:block lg:[flex:var(--r)_1_0%]"
+                />
+              ))}
           </div>
         ))}
       </div>

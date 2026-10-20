@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { PageFlip } from "page-flip";
+import { PixelIcon } from "@/components/PixelIcon";
 
 /**
  * Flip-book for editorial work. Each image is one page; the first and last are
@@ -91,15 +92,18 @@ export function Showcase({ pages }: { pages: string[] }) {
       <div ref={holder} className="mx-auto w-full" />
       {!ready && <p className="label text-muted">Loading pages…</p>}
       {ready && (
-        <div className="label flex items-center gap-6">
-          <button onClick={() => book.current?.flipPrev()} className="px-3 py-2">
-            ← Prev
+        // Same style as the PREVIOUS / INDEX / NEXT pager at the foot of project pages.
+        <div className="label flex items-center gap-8 text-xs leading-4 text-accent">
+          <button onClick={() => book.current?.flipPrev()} className="flex items-center gap-2 py-2 hover:underline">
+            <PixelIcon name="chevron" />
+            Previous
           </button>
           <span>
             {current + 1} / {pages.length}
           </span>
-          <button onClick={() => book.current?.flipNext()} className="px-3 py-2">
-            Next →
+          <button onClick={() => book.current?.flipNext()} className="flex items-center gap-2 py-2 hover:underline">
+            Next
+            <PixelIcon name="chevron" flip />
           </button>
         </div>
       )}
