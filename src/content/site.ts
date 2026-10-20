@@ -63,7 +63,7 @@ export const about = {
 
 export const archive = {
   headline: "Archives",
-  subhead: "The home for ideas, thoughts and explorations that have nowhere to go.",
+  subhead: "The home for ideas thoughts and explorations that have nowhere to go",
   images: [
     "https://framerusercontent.com/images/5L2VygcM6LOnRkdpVxxePvnZo.png",
     "https://framerusercontent.com/images/0JSaV5n9MNXZRnz0LIffhnPLUUE.png",

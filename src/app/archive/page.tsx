@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Gallery } from "@/components/layouts/Gallery";
+import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { archive } from "@/content/site";
 
 export const metadata: Metadata = {
@@ -9,10 +10,9 @@ export const metadata: Metadata = {
 
 export default function Archive() {
   return (
-    <div className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
-      <h1 className="text-display-xl uppercase text-accent tracking-tight">{archive.headline}</h1>
-      <p className="label mt-4 max-w-md text-muted">{archive.subhead}</p>
-      <div className="mt-16">
+    <div className="dot-grid px-4 pb-24 pt-16 sm:px-3">
+      <GalleryIntro title={archive.headline} summary={archive.subhead} />
+      <div id="gallery" className="mx-auto mt-16 max-w-[1200px] scroll-mt-[86px] bg-background p-4">
         <Gallery images={archive.images.map((src) => ({ src, alt: "" }))} />
       </div>
     </div>

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { NotionBlocks } from "@/components/NotionBlocks";
 import { Gallery } from "@/components/layouts/Gallery";
+import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { Showcase } from "@/components/layouts/Showcase";
 import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
 
@@ -48,30 +49,17 @@ export default async function ProjectPage({ params }: Params) {
   if (project.layout === "Gallery") {
     const { images } = splitImages(blocks);
     return (
-      <div className="dot-grid px-4 pb-24 pt-12 sm:px-3">
-        <header className="label max-w-[610px] space-y-6 bg-background p-6 text-sm leading-[1.5] sm:p-8">
-          <h1 className="text-accent">{project.title}</h1>
-          {project.summary &&
-            project.summary.split(/\n\s*\n/).map((para) => (
-              <p key={para} className="text-muted">{para}</p>
-            ))}
-          {(project.printsLink || project.website) && (
-            <div className="flex flex-wrap gap-6 text-accent">
-              {project.printsLink && (
-                <a href={project.printsLink} target="_blank" rel="noreferrer" className="hover:underline">
-                  [Buy my prints]
-                </a>
-              )}
-              {project.website && (
-                <a href={project.website} target="_blank" rel="noreferrer" className="hover:underline">
-                  [View website]
-                </a>
-              )}
-            </div>
-          )}
-        </header>
+      <div className="dot-grid px-4 pb-24 pt-16 sm:px-3">
+        <GalleryIntro
+          title={project.title}
+          summary={project.summary}
+          links={[
+            ...(project.printsLink ? [{ label: "Buy my prints", href: project.printsLink }] : []),
+            ...(project.website ? [{ label: "View website", href: project.website }] : []),
+          ]}
+        />
 
-        <div className="mx-auto mt-14 max-w-[1200px] bg-background p-4">
+        <div id="gallery" className="mx-auto mt-16 max-w-[1200px] scroll-mt-[86px] bg-background p-4">
           <Gallery images={images} />
         </div>
 
