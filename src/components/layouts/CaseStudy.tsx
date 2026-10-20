@@ -5,12 +5,10 @@ import { RichText } from "@/components/NotionBlocks";
 import { SelectedProjects, type SelectedProject } from "@/components/layouts/SelectedProjects";
 import { imageUrl, type Block, type Project } from "@/lib/notion";
 
-// Desktop columns from the Figma frame (1216px wide): a 123px gutter for BACK, a 248px meta column,
-// the 722px text column, then 123px. The text column starts 371px in.
-const textCol = "lg:ml-[30.51%] lg:w-[59.38%]";
-
 type ProjectLink = { slug: string; title: string };
 
+// Layout of the case studies on the Framer site: a wide banner (1194px), then text and images
+// sharing one 953px column.
 export function CaseStudy({
   project,
   blocks,
@@ -22,7 +20,7 @@ export function CaseStudy({
   prev: ProjectLink | null;
   next: ProjectLink | null;
 }) {
-  // A page body that opens with an image uses it as the banner (as on the Framer site);
+  // A page body that opens with an image uses it as the banner;
   // otherwise the Notion page cover, then the first image anywhere in the body.
   let cover = project.cover;
   let body = blocks;
@@ -32,62 +30,33 @@ export function CaseStudy({
     body = blocks.filter((_, i) => i !== first);
   }
 
-  // Opening text sits beside the meta column; everything from the first image on runs below both.
-  const isMedia = (b: Block) =>
-    ["image", "video", "embed", "column_list"].includes(b.type) || isSelected(b);
-  const split = body.findIndex(isMedia);
+  // [ VIEW WEBSITE ] follows the opening paragraphs, before the first section heading or image.
+  const split = body.findIndex((b) => b.type !== "paragraph");
   const opening = split === -1 ? body : body.slice(0, split);
   const rest = split === -1 ? [] : body.slice(split);
 
   return (
-    <article className="mx-auto w-full max-w-[1264px] px-6 pb-24 pt-10 sm:pt-[69px]">
-      <div className="grid gap-6 lg:grid-cols-[123fr_1093fr] lg:gap-0">
-        <Link href="/#work" className="label flex w-fit items-center gap-1 self-start text-accent hover:underline">
-          <PixelIcon name="chevron" />
-          Back
-        </Link>
-        {cover && <img src={cover} alt="" className="aspect-[1093/464] w-full object-cover" />}
-      </div>
+    <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
+      {cover && <img src={cover} alt="" className="w-full" />}
 
-      <div className="mt-10 grid lg:mt-12 lg:grid-cols-[371fr_845fr] lg:grid-rows-[auto_1fr]">
-        <h1 className="text-title font-semibold leading-[1.35] tracking-[-0.01em] text-accent lg:col-start-2 lg:w-[85.44%]">
-          {project.title}
-        </h1>
-        <aside className="label mt-8 space-y-8 self-start text-[#1a1a1a] lg:col-start-1 lg:row-span-2 lg:row-start-1 lg:mt-[13px] lg:pl-[33.15%]">
-          <dl className="grid grid-cols-3 gap-4 lg:block lg:space-y-8">
-            {project.years && <Meta label="Year" value={project.years} />}
-            {project.roles.length > 0 && <Meta label="Role" value={project.roles.join(" / ")} />}
-            {project.industry && <Meta label="Industry" value={project.industry} />}
-          </dl>
-          {project.website && (
-            <a
-              href={project.website}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 bg-accent-soft py-2.5 pl-3 pr-3.5 leading-4 text-white transition-colors hover:bg-accent"
-            >
-              Visit website
-              <PixelIcon name="diamond" />
-            </a>
-          )}
-        </aside>
-        <div className="lg:col-start-2 lg:row-start-2">
-          <CaseStudyBody blocks={opening} col="lg:w-[85.44%]" />
-        </div>
+      <div className="mx-auto max-w-[953px]">
+        <h1 className="mt-10 text-title font-medium leading-[1.35] text-accent sm:mt-14">{project.title}</h1>
+        <CaseStudyBody blocks={opening} first="mt-8 sm:mt-10" />
+        {project.website && (
+          <a
+            href={project.website}
+            target="_blank"
+            rel="noreferrer"
+            className="label mt-2 inline-block text-xs text-accent hover:underline"
+          >
+            [ View website ]
+          </a>
+        )}
+        <CaseStudyBody blocks={rest} first="mt-14" />
       </div>
-      <CaseStudyBody blocks={rest} />
 
       {prev && next && <PagerNav prev={prev} next={next} />}
     </article>
-  );
-}
-
-function Meta({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="text-sm lg:text-base">
-      <dt className="inline-block rounded-[4px] border-[0.5px] border-[#1a1a1a] px-1.5 py-1">{label}</dt>
-      <dd className="mt-3">{value}</dd>
-    </div>
   );
 }
 
@@ -113,8 +82,8 @@ const imagesIn = (bs: Block[]): string[] =>
 const paragraphsIn = (bs: Block[]) =>
   bs.flatMap((k) => (k.type === "paragraph" && k.paragraph.rich_text.length ? [plainText(k.paragraph.rich_text)] : []));
 
-/** Lays out the page body: text in the 722px column, images across the full width. */
-function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: string }) {
+/** Lays out the page body; spacing between blocks follows the Framer page. */
+function CaseStudyBody({ blocks, first = "mt-14" }: { blocks: Block[]; first?: string }) {
   const out: React.ReactNode[] = [];
   let prevKind: "text" | "heading" | "subheading" | "media" | null = null;
 
@@ -122,13 +91,13 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
   const gap = (kind: "text" | "heading" | "subheading" | "media") => {
     const g =
       prevKind === null
-        ? kind === "media" ? "mt-12" : "mt-6"
+        ? first
         : kind === "media"
-          ? prevKind === "media" ? "mt-3 sm:mt-5" : "mt-12 sm:mt-14"
+          ? prevKind === "media" ? "mt-3 sm:mt-5" : "mt-10 sm:mt-14"
           : prevKind === "media"
-            ? "mt-12 sm:mt-16"
+            ? "mt-10 sm:mt-14"
             : kind === "heading"
-              ? "mt-10 sm:mt-12"
+              ? "mt-12 sm:mt-14"
               : prevKind === "heading" ? "mt-4" : prevKind === "subheading" ? "mt-0" : "mt-[1.35em]";
     prevKind = kind;
     return g;
@@ -170,7 +139,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
       out.push(
         <List
           key={b.id}
-          className={`${gap("text")} ${col} ${List === "ul" ? "list-disc" : "list-decimal"} space-y-[1.35em] ps-[30px] text-xl text-muted`}
+          className={`${gap("text")} ${List === "ul" ? "list-disc" : "list-decimal"} space-y-[1.35em] ps-[30px] text-xl text-muted`}
         >
           {items.map((item) => (
             <li key={item.id}>
@@ -187,7 +156,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
       case "paragraph":
         if (b.paragraph.rich_text.length === 0) continue;
         out.push(
-          <p key={b.id} className={`${gap("text")} ${col} whitespace-pre-line text-xl text-muted`}>
+          <p key={b.id} className={`${gap("text")} whitespace-pre-line text-xl text-muted`}>
             {text(b.paragraph.rich_text)}
           </p>,
         );
@@ -195,7 +164,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
       case "heading_3":
         // Small bold lead-in, like the numbered objectives in the Figma frame.
         out.push(
-          <h3 key={b.id} className={`${gap("subheading")} ${col} text-xl font-bold text-muted`}>
+          <h3 key={b.id} className={`${gap("subheading")} text-xl font-bold text-muted`}>
             {text(b.heading_3.rich_text)}
           </h3>,
         );
@@ -204,7 +173,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
       case "heading_2": {
         const rich = b.type === "heading_1" ? b.heading_1.rich_text : b.heading_2.rich_text;
         out.push(
-          <h2 key={b.id} className={`${gap("heading")} ${col} text-heading font-semibold tracking-[-0.01em] text-muted`}>
+          <h2 key={b.id} className={`${gap("heading")} text-2xl font-medium text-muted`}>
             {text(rich)}
           </h2>,
         );
@@ -212,7 +181,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
       }
       case "quote":
         out.push(
-          <blockquote key={b.id} className={`${gap("text")} ${col} border-l-2 border-accent pl-6 text-2xl text-muted`}>
+          <blockquote key={b.id} className={`${gap("text")} border-l-2 border-accent pl-6 text-2xl text-muted`}>
             {text(b.quote.rich_text)}
           </blockquote>,
         );
@@ -240,7 +209,7 @@ function CaseStudyBody({ blocks, col = textCol }: { blocks: Block[]; col?: strin
         break;
       }
       case "divider":
-        out.push(<hr key={b.id} className={`${gap("text")} ${col} border-[#d9d9d9]`} />);
+        out.push(<hr key={b.id} className={`${gap("text")} border-[#d9d9d9]`} />);
         break;
       default:
         break;
@@ -279,7 +248,7 @@ function Media({ block: b }: { block: Block }) {
     <figure>
       {el}
       {cap.length > 0 && (
-        <figcaption className="mt-5 text-xl text-muted sm:ml-[calc(50%+14px)] sm:max-w-[594px]">
+        <figcaption className="mt-4 text-xl text-muted sm:mt-5">
           <RichText items={cap} />
         </figcaption>
       )}
