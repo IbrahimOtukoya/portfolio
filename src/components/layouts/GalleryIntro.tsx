@@ -12,7 +12,7 @@ export function GalleryIntro({
     <header className="label max-w-[505px] bg-background p-3 text-xs leading-4 sm:ml-5">
       <h1 className="text-accent">{title}</h1>
       {summary?.split(/\n\s*\n/).map((para) => (
-        <p key={para} className="text-muted">
+        <p key={para} className="leading-5 text-muted">
           {para}
         </p>
       ))}

@@ -12,7 +12,7 @@ export default function Archive() {
   return (
     <div className="dot-grid px-4 pb-24 pt-16 sm:px-3">
       <GalleryIntro title={archive.headline} summary={archive.subhead} />
-      <div id="gallery" className="mx-auto mt-16 max-w-[1200px] scroll-mt-[86px] bg-background p-4">
+      <div id="gallery" className="mt-16 scroll-mt-[86px] bg-background p-3 sm:mx-4 sm:p-4">
         <Gallery images={archive.images.map((src) => ({ src, alt: "" }))} />
       </div>
     </div>
