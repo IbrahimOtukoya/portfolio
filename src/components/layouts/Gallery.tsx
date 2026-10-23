@@ -2,6 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- Notion images have unknown sizes and come from many hosts */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { PixelIcon } from "@/components/PixelIcon";
 import { useImageRatios } from "@/hooks/useImageRatios";
 
 export type GalleryImage = { src: string; alt: string };
@@ -98,19 +99,22 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             alt={images[open].alt}
             className="max-h-full max-w-full animate-[zoom_250ms_ease-out] cursor-zoom-out object-contain shadow-2xl"
           />
-          <div className="label absolute inset-x-0 bottom-4 flex items-center justify-center gap-6">
-            <button onClick={(e) => (e.stopPropagation(), step(-1))} className="px-3 py-2" aria-label="Previous image">
-              ← Prev
+          {/* Same style as the PREVIOUS / INDEX / NEXT pager at the foot of project pages. */}
+          <div className="label absolute inset-x-0 bottom-4 flex items-center justify-center gap-8 text-xs leading-4 text-accent">
+            <button onClick={(e) => (e.stopPropagation(), step(-1))} className="flex items-center gap-2 py-2 hover:underline" aria-label="Previous image">
+              <PixelIcon name="chevron" />
+              Previous
             </button>
             <span>
               {open + 1} / {images.length}
             </span>
-            <button onClick={(e) => (e.stopPropagation(), step(1))} className="px-3 py-2" aria-label="Next image">
-              Next →
+            <button onClick={(e) => (e.stopPropagation(), step(1))} className="flex items-center gap-2 py-2 hover:underline" aria-label="Next image">
+              Next
+              <PixelIcon name="chevron" flip />
             </button>
           </div>
-          <button onClick={close} className="label absolute right-4 top-4 px-3 py-2" aria-label="Close">
-            [ Close ]
+          <button onClick={close} className="label absolute right-4 top-4 py-2 text-xs leading-4 text-accent hover:underline sm:right-12" aria-label="Close">
+            [Close]
           </button>
         </div>
       )}
