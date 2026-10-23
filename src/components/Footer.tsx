@@ -39,7 +39,7 @@ export function Footer() {
               </li>
             ))}
           </ul>
-          <p className="label w-[155px] text-center text-xs sm:text-right">Designed by iotukoya built by jen</p>
+          <p className="label text-center text-xs sm:text-right">Designed and built by iOtukoya</p>
         </div>
       </div>
     </footer>
