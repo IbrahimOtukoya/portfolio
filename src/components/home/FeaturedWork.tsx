@@ -67,7 +67,8 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
         </div>
 
         <div className="mt-12 lg:mt-0">
-          {/* Column headings */}
+          {/* Column headings; phones show just /PROJECTS */}
+          <p className="label border-b border-label pb-4 text-muted lg:hidden">/Projects</p>
           <div className={`label hidden border-b border-label pb-4 text-accent lg:grid ${cols}`}>
             <span>/Projects</span>
             <span>/Role</span>
@@ -167,10 +168,10 @@ function Row({ project: p }: { project: FeaturedProject }) {
 
       <Link
         href={href}
-        className="label flex items-center gap-3 self-start bg-background px-4 py-3 leading-4 text-accent transition-colors hover:bg-accent hover:text-white"
+        className="label flex items-center gap-2.5 self-start bg-background p-2 text-xs leading-4 text-accent transition-colors hover:bg-accent hover:text-white"
       >
         Read case study
-        <PixelIcon name="diamond" />
+        <PixelIcon name="diamond" className="size-4" />
       </Link>
     </li>
   );
