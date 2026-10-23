@@ -7,17 +7,19 @@ import { site } from "@/content/site";
 // On hover, frames 2-6 play 0.4s apart, then the tile returns to frame 1 (see .tile-frame in globals.css).
 const FRAMES = 6;
 
+// From 1024px up the hero scales with the screen width, so on tablets it keeps the desktop
+// proportions and fits in the first screen, as it does at 1512px.
 export function Hero() {
   return (
-    <section className="dot-grid relative px-4 pb-16 pt-6 sm:pb-[164px] sm:pt-[88px]">
-      <div className="mx-auto flex w-full max-w-[960px] flex-col">
+    <section className="dot-grid relative px-4 pb-16 pt-6 sm:pb-[164px] sm:pt-[88px] lg:pb-[min(164px,10.85vw)] lg:pt-[min(88px,5.82vw)]">
+      <div className="mx-auto flex w-full max-w-[960px] flex-col lg:max-w-[min(960px,63.5vw)]">
         {/* On phones the bio follows the title card directly and the tiles come last. */}
-        <div className="label flex w-full flex-col gap-2 bg-background px-2 pb-3 pt-[14px] text-accent sm:w-fit sm:p-4">
-          <h1 className="text-base sm:text-title">{site.hero.headline}</h1>
-          <p className="text-xs sm:text-base">{site.hero.role}</p>
+        <div className="label flex w-full flex-col gap-2 bg-background px-2 pb-3 pt-[14px] text-accent sm:w-fit sm:p-4 lg:p-[min(16px,1.06vw)]">
+          <h1 className="text-base sm:text-title lg:text-[min(2rem,2.116vw)]">{site.hero.headline}</h1>
+          <p className="text-xs sm:text-base lg:text-[max(0.75rem,min(1rem,1.058vw))]">{site.hero.role}</p>
         </div>
 
-        <div className="order-3 mt-6 grid gap-6 sm:order-none sm:mt-[50px] sm:grid-cols-3 sm:gap-[21px]">
+        <div className="order-3 mt-6 grid gap-6 sm:order-none sm:mt-[50px] sm:grid-cols-3 sm:gap-[21px] lg:mt-[min(50px,3.3vw)] lg:gap-[min(21px,1.39vw)]">
           {site.tiles.map((t) => {
             const external = t.href.startsWith("http");
             const Tag = external ? "a" : Link;
@@ -43,8 +45,8 @@ export function Hero() {
           })}
         </div>
 
-        <div className="flex flex-col items-start gap-3 bg-background px-3 pb-6 pt-4 sm:mt-[21px] sm:gap-6 sm:p-8">
-          <p className="text-base font-light leading-[1.35] text-[#8a8a8a] sm:text-2xl sm:font-normal sm:text-muted">{site.hero.bio}</p>
+        <div className="flex flex-col items-start gap-3 bg-background px-3 pb-6 pt-4 sm:mt-[21px] sm:gap-6 sm:p-8 lg:mt-[min(21px,1.39vw)] lg:gap-[min(24px,1.59vw)] lg:p-[min(32px,2.12vw)]">
+          <p className="text-base font-light leading-[1.35] text-[#8a8a8a] sm:text-2xl sm:font-normal sm:text-muted lg:text-[min(1.5rem,1.587vw)]">{site.hero.bio}</p>
           <p className="label flex items-center gap-2.5 bg-chip px-2 py-2 text-xs text-label">
             <PixelIcon name="pin" />[{site.location}]
           </p>
