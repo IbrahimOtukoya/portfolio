@@ -19,8 +19,9 @@ export type FeaturedProject = {
 
 const PAGE_SIZE = 6;
 
-// Desktop columns from the final design: /PROJECTS, /ROLE, /INDUSTRY (the /FILTER column is 247px).
-const cols = "lg:grid-cols-[689px_276px_1fr]";
+// Desktop columns from the final design (689px, 276px and the rest at 1512px wide), kept as
+// proportions so the table also fits tablet widths.
+const cols = "lg:grid-cols-[minmax(0,689fr)_minmax(0,276fr)_minmax(0,254fr)]";
 
 export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; year: number }) {
   const [selected, setSelected] = useState<string[]>([]);
@@ -47,7 +48,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
         Featured Work<span className="mt-3 text-base">©{year}</span>
       </h2>
 
-      <div className="mt-8 grid lg:grid-cols-[228px_1fr] lg:gap-[19px]">
+      <div className="mt-8 grid lg:grid-cols-[228px_minmax(0,1fr)] lg:gap-[19px]">
         {/* /FILTER column, checkboxes as in the Figma frame */}
         <div>
           <p className="label border-b border-accent-soft pb-4 text-accent">/Filter</p>
