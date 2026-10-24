@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: Params) {
           ]}
         />
 
-        <div id="gallery" className="mt-16 scroll-mt-[86px] bg-tint p-3 sm:mx-4 sm:p-4">
+        <div id="gallery" className="mt-16 scroll-mt-[86px] bg-background p-3 sm:mx-4 sm:p-4">
           <Gallery images={images} />
         </div>
 

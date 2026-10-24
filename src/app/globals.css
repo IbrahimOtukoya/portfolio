@@ -2,11 +2,10 @@
 
 /* Tokens from the Figma "Portfolio" file */
 :root {
-  --background: #ffffff;
+  /* Site background: the accent's hue at 10% saturation (HSB 240/10/100), so images with
+     white backgrounds stand apart from the page */
+  --background: #e6e6ff;
   --surface: #f2f2f3;
-  /* Case study page and gallery panel background: the accent's hue at 10% saturation (HSB 240/10/100),
-     so images with white backgrounds stand apart from the page */
-  --tint: #e6e6ff;
   --chip: #f3f3f2;
   --foreground: #1a1a1a;
   --muted: #616161;
@@ -23,7 +22,6 @@
 @theme inline {
   --color-background: var(--background);
   --color-surface: var(--surface);
-  --color-tint: var(--tint);
   --color-chip: var(--chip);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
