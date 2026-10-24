@@ -35,27 +35,29 @@ export function CaseStudy({
   const rest = split === -1 ? [] : body.slice(split);
 
   return (
-    <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
-      {cover && <img src={cover} alt="" className="w-full" />}
+    <div className="bg-tint">
+      <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
+        {cover && <img src={cover} alt="" className="w-full" />}
 
-      <div className="mx-auto max-w-[953px]">
-        <h1 className="mt-10 text-title font-medium leading-[1.35] text-accent sm:mt-14">{project.title}</h1>
-        <CaseStudyBody blocks={opening} first="mt-8 sm:mt-10" />
-        {project.website && (
-          <a
-            href={project.website}
-            target="_blank"
-            rel="noreferrer"
-            className="label mt-2 inline-block text-xs text-accent hover:underline"
-          >
-            [ View website ]
-          </a>
-        )}
-        <CaseStudyBody blocks={rest} first="mt-14" />
-      </div>
+        <div className="mx-auto max-w-[953px]">
+          <h1 className="mt-10 text-title font-medium leading-[1.35] text-accent sm:mt-14">{project.title}</h1>
+          <CaseStudyBody blocks={opening} first="mt-8 sm:mt-10" />
+          {project.website && (
+            <a
+              href={project.website}
+              target="_blank"
+              rel="noreferrer"
+              className="label mt-2 inline-block text-xs text-accent hover:underline"
+            >
+              [ View website ]
+            </a>
+          )}
+          <CaseStudyBody blocks={rest} first="mt-14" />
+        </div>
 
-      {prev && next && <PagerNav prev={prev} next={next} />}
-    </article>
+        {prev && next && <PagerNav prev={prev} next={next} />}
+      </article>
+    </div>
   );
 }
 
