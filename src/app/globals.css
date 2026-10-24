@@ -2,9 +2,9 @@
 
 /* Tokens from the Figma "Portfolio" file */
 :root {
-  /* Site background: the accent's hue at 10% saturation (HSB 240/10/100), so images with
-     white backgrounds stand apart from the page */
-  --background: #e6e6ff;
+  /* Site background: off-white (HSB 240/0/97), so images with white backgrounds stand apart
+     from the page */
+  --background: #f7f7f7;
   --surface: #f2f2f3;
   --chip: #f3f3f2;
   --foreground: #1a1a1a;
