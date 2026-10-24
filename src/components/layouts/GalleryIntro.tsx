@@ -1,15 +1,18 @@
-// The small white label card at the top of the Archive and Gallery pages, sitting on the dot grid.
+// The small label card at the top of the Archive and Gallery pages, sitting on the dot grid.
+// It takes the page's background colour (white on Archive, the tint on project pages).
 export function GalleryIntro({
   title,
   summary,
   links = [],
+  className = "bg-background",
 }: {
   title: string;
   summary?: string;
   links?: { label: string; href: string }[];
+  className?: string;
 }) {
   return (
-    <header className="label max-w-[505px] bg-background p-3 text-xs leading-4 sm:ml-5">
+    <header className={`label max-w-[505px] ${className} p-3 text-xs leading-4 sm:ml-5`}>
       <h1 className="text-accent">{title}</h1>
       {summary?.split(/\n\s*\n/).map((para) => (
         <p key={para} className="leading-5 text-muted">

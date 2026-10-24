@@ -52,6 +52,7 @@ export default async function ProjectPage({ params }: Params) {
     return (
       <div className="dot-grid px-4 pb-24 pt-16 sm:px-3">
         <GalleryIntro
+          className="bg-tint"
           title={project.title}
           summary={project.summary}
           links={[
@@ -64,7 +65,7 @@ export default async function ProjectPage({ params }: Params) {
           <Gallery images={images} />
         </div>
 
-        {prev && next && <PagerNav prev={prev} next={next} className="mx-auto mt-16 w-fit bg-background px-6 py-4 sm:mt-24" />}
+        {prev && next && <PagerNav prev={prev} next={next} className="mx-auto mt-16 w-fit bg-tint px-6 py-4 sm:mt-24" />}
       </div>
     );
   }
