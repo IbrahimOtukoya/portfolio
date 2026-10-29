@@ -29,26 +29,27 @@ export function ProjectHeader({
       {cover && <img src={cover} alt="" className="w-full" />}
 
       <div className="mt-10 grid gap-10 sm:mt-14 md:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] md:gap-12">
-        <aside className="label flex flex-col gap-8 text-sm text-foreground md:pt-1">
+        <aside className="label flex flex-col gap-6 text-xs leading-4 text-foreground md:pt-1">
           {meta.length > 0 && (
-            <dl className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-1">
+            <dl className="grid grid-cols-3 gap-4 md:grid-cols-1 md:gap-6">
               {meta.map((m) => (
                 <div key={m.label}>
-                  <dt className="inline-block rounded-[3px] border border-foreground px-2 py-1">{m.label}</dt>
-                  <dd className="mt-3">{m.value}</dd>
+                  <dt className="inline-block rounded-[3px] border border-foreground px-1.5 py-1">{m.label}</dt>
+                  <dd className="mt-2">{m.value}</dd>
                 </div>
               ))}
             </dl>
           )}
+          {/* Same button as READ CASE STUDY on the home page */}
           {project.website && (
             <a
               href={project.website}
               target="_blank"
               rel="noreferrer"
-              className="flex w-fit items-center gap-3 bg-accent-soft px-4 py-3 text-background transition-colors hover:bg-accent"
+              className="flex w-fit items-center gap-2.5 bg-background p-2 text-accent transition-colors hover:bg-accent hover:text-white"
             >
               {linkLabel}
-              <PixelIcon name="plus" />
+              <PixelIcon name="diamond" className="size-4" />
             </a>
           )}
         </aside>

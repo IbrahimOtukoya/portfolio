@@ -37,11 +37,6 @@ const icons = {
     size: [12, 12],
     rects: [[8, 0, 4, 4, S], [4, 0, 4, 4, B], [0, 4, 4, 4, B], [4, 8, 4, 4, B], [8, 8, 4, 4, S], [4, 4, 4, 4, S]],
   },
-  // Plus on the VISIT WEBSITE button, 12×12 (as on the Framer site)
-  plus: {
-    size: [12, 12],
-    rects: [[4, 0, 4, 4, O], [0, 4, 4, 4, O], [8, 4, 4, 4, O], [4, 8, 4, 4, O], [4, 4, 4, 4, R]],
-  },
 } satisfies Record<string, { size: [number, number]; rects: Rect[] }>;
 
 export function PixelIcon({
