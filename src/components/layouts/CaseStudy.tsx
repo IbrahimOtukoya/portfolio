@@ -1,13 +1,14 @@
 /* eslint-disable @next/next/no-img-element -- Notion images have unknown sizes and come from many hosts */
 import { PagerNav } from "@/components/PagerNav";
+import { ProjectHeader } from "@/components/layouts/ProjectHeader";
 import { RichText } from "@/components/NotionBlocks";
 import { SelectedProjects, type SelectedProject } from "@/components/layouts/SelectedProjects";
 import { imageUrl, type Block, type Project } from "@/lib/notion";
 
 type ProjectLink = { slug: string; title: string };
 
-// Layout of the case studies on the Framer site: a wide banner (1194px), then text and images
-// sharing one 953px column.
+// Layout of the case studies on the Framer site: a wide banner (1194px), then the project
+// details in a sidebar beside the title, text and images.
 export function CaseStudy({
   project,
   blocks,
@@ -29,30 +30,11 @@ export function CaseStudy({
     body = blocks.filter((_, i) => i !== first);
   }
 
-  // [ VIEW WEBSITE ] follows the opening paragraphs, before the first section heading or image.
-  const split = body.findIndex((b) => b.type !== "paragraph");
-  const opening = split === -1 ? body : body.slice(0, split);
-  const rest = split === -1 ? [] : body.slice(split);
-
   return (
     <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
-      {cover && <img src={cover} alt="" className="w-full" />}
-
-      <div className="mx-auto max-w-[953px]">
-        <h1 className="mt-10 text-title font-medium leading-[1.35] text-accent sm:mt-14">{project.title}</h1>
-        <CaseStudyBody blocks={opening} first="mt-8 sm:mt-10" />
-        {project.website && (
-          <a
-            href={project.website}
-            target="_blank"
-            rel="noreferrer"
-            className="label mt-2 inline-block text-xs text-accent hover:underline"
-          >
-            [ View website ]
-          </a>
-        )}
-        <CaseStudyBody blocks={rest} first="mt-14" />
-      </div>
+      <ProjectHeader project={project} cover={cover}>
+        <CaseStudyBody blocks={body} first="mt-8 sm:mt-10" />
+      </ProjectHeader>
 
       {prev && next && <PagerNav prev={prev} next={next} />}
     </article>
@@ -82,7 +64,7 @@ const paragraphsIn = (bs: Block[]) =>
   bs.flatMap((k) => (k.type === "paragraph" && k.paragraph.rich_text.length ? [plainText(k.paragraph.rich_text)] : []));
 
 /** Lays out the page body; spacing between blocks follows the Framer page. */
-function CaseStudyBody({ blocks, first = "mt-14" }: { blocks: Block[]; first?: string }) {
+export function CaseStudyBody({ blocks, first = "mt-14" }: { blocks: Block[]; first?: string }) {
   const out: React.ReactNode[] = [];
   let prevKind: "text" | "heading" | "subheading" | "media" | null = null;
 

@@ -5,7 +5,8 @@ import { Gallery } from "@/components/layouts/Gallery";
 import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { Showcase } from "@/components/layouts/Showcase";
 import { Editorial } from "@/components/layouts/Editorial";
-import { CaseStudy } from "@/components/layouts/CaseStudy";
+import { CaseStudy, CaseStudyBody } from "@/components/layouts/CaseStudy";
+import { ProjectHeader } from "@/components/layouts/ProjectHeader";
 import { PagerNav } from "@/components/PagerNav";
 import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
 
@@ -73,13 +74,34 @@ export default async function ProjectPage({ params }: Params) {
 
   if (project.layout === "Case study") return <CaseStudy project={project} blocks={blocks} prev={prev} next={next} />;
 
+  if (project.layout === "Editorial") {
+    // Text above the first image sits beside the details; without any, the Summary does.
+    const { intro, images } = splitImages(blocks);
+    return (
+      <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
+        <ProjectHeader project={project} cover={project.cover}>
+          {intro.length > 0 ? (
+            <CaseStudyBody blocks={intro} first="mt-8 sm:mt-10" />
+          ) : (
+            project.summary.split(/\n\s*\n/).map((para, i) => (
+              <p key={para} className={`${i === 0 ? "mt-8 sm:mt-10" : "mt-[1.35em]"} whitespace-pre-line text-xl text-muted`}>
+                {para}
+              </p>
+            ))
+          )}
+        </ProjectHeader>
+
+        <div className="mt-16 sm:mt-24">
+          <Editorial images={images} />
+        </div>
+
+        {prev && next && <PagerNav prev={prev} next={next} />}
+      </article>
+    );
+  }
+
   return (
     <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
-      {/* Editorial pages open with the Notion cover as a wide header image. */}
-      {project.layout === "Editorial" && project.cover && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={project.cover} alt="" className="mb-12 w-full sm:mb-16" />
-      )}
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
         <h1 className="text-display leading-[1.1] tracking-tight text-accent">{project.title}</h1>
         <div className="space-y-6">
@@ -119,13 +141,7 @@ function Body({ layout, blocks }: { layout: string; blocks: Block[] }) {
   return (
     <div className="flex flex-col gap-12">
       {intro.length > 0 && <NotionBlocks blocks={intro} />}
-      {layout === "Gallery" ? (
-        <Gallery images={images} />
-      ) : layout === "Editorial" ? (
-        <Editorial images={images} />
-      ) : (
-        <Showcase pages={images.map((i) => i.src)} />
-      )}
+      {layout === "Gallery" ? <Gallery images={images} /> : <Showcase pages={images.map((i) => i.src)} />}
     </div>
   );
 }
