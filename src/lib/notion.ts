@@ -162,14 +162,15 @@ async function listChildren(blockId: string): Promise<Block[]> {
 
 export const getBlocks = cache(listChildren);
 
-/** Images for a project's home page row: the Thumbnails property, else the first images in the page. */
+/**
+ * Images for a project's home page row: the Thumbnails property, else the first images in the page.
+ * Editorial pages lead with their cover (the header image), since their body holds only spreads.
+ */
 export async function getThumbnails(project: Project, limit = 4): Promise<string[]> {
   if (project.thumbnails.length > 0) return project.thumbnails;
   const blocks = await getBlocks(project.id);
-  return blocks
-    .map(imageUrl)
-    .filter((u): u is string => !!u)
-    .slice(0, limit);
+  const lead = project.layout === "Editorial" && project.cover ? [project.cover] : [];
+  return [...lead, ...blocks.map(imageUrl).filter((u): u is string => !!u)].slice(0, limit);
 }
 
 /** URL to show for an image block; Notion-hosted files go through the refresh proxy. */
