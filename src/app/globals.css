@@ -17,6 +17,8 @@
   --footer: #0052ff;
   --orange: #f98105;
   --red: #c1000b;
+  /* Yellow from the Thoughts tile */
+  --yellow: #ecfd1b;
   --sky: #049ddd;
 }
 
@@ -113,6 +115,16 @@ body {
   100% { transform: translateX(0); }
 }
 
+/* Location pin in the hero chip: the centre pixel swaps red and yellow every 0.5s. */
+.pin-blink {
+  animation: pin-blink 1s step-end infinite;
+}
+
+@keyframes pin-blink {
+  0% { fill: var(--red); }
+  50% { fill: var(--yellow); }
+}
+
 @keyframes fade {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -131,7 +143,8 @@ body {
   }
   .tile:hover .tile-frame,
   .tile:focus-visible .tile-frame,
-  .favicon-eyes {
+  .favicon-eyes,
+  .pin-blink {
     animation: none;
   }
 }

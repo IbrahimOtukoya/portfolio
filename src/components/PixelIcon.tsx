@@ -1,7 +1,7 @@
 // Pixel-art icons drawn as squares, transcribed from the Figma file.
-// Each rect is [x, y, width, height, fill] in the icon's own pixel units.
+// Each rect is [x, y, width, height, fill] in the icon's own pixel units, plus an optional class.
 
-type Rect = [number, number, number, number, string];
+type Rect = [number, number, number, number, string, string?];
 
 const O = "var(--orange)";
 const R = "var(--red)";
@@ -22,7 +22,8 @@ const icons = {
     size: [12, 16],
     rects: [
       [2, 8, 4, 4, O], [0, 4, 4, 4, O], [6, 0, 4, 4, O], [2, 0, 4, 4, O], [6, 8, 4, 4, O],
-      [4, 12, 4, 4, O], [4, 4, 4, 4, R], [8, 4, 4, 4, O],
+      // The centre blinks red / yellow (see .pin-blink in globals.css)
+      [4, 12, 4, 4, O], [4, 4, 4, 4, R, "pin-blink"], [8, 4, 4, 4, O],
     ],
   },
   // Heart before "SELECTED PROJECTS", 16×16 (orange, as on the Framer site)
@@ -59,8 +60,8 @@ export function PixelIcon({
       className={className}
       style={flip ? { transform: "scaleX(-1)" } : undefined}
     >
-      {(rects as Rect[]).map(([x, y, w, h, fill], i) => (
-        <rect key={i} x={x} y={y} width={w} height={h} fill={fill} />
+      {(rects as Rect[]).map(([x, y, w, h, fill, cls], i) => (
+        <rect key={i} x={x} y={y} width={w} height={h} fill={fill} className={cls} />
       ))}
     </svg>
   );
