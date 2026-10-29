@@ -14,6 +14,7 @@ Each row in the Notion database is one project. Only rows with **Published** tic
 | Years, Role, Industry | The /YEAR, /ROLE and INDUSTRY columns on the home page |
 | Category | Drives the /FILTER list (Branding, Illustration, Editorial, Graphic Design) |
 | Thumbnails | Images in the home page row; if empty, the first 4 images in the page are used |
+| Mobile thumbnail | Optional; replaces the first thumbnail on phones |
 | Website, Prints link | Optional buttons on the project page |
 | Order | Position on the home grid and in previous/next links |
 | Featured | Shows on the home page |

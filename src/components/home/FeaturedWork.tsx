@@ -15,6 +15,7 @@ export type FeaturedProject = {
   categories: string[];
   industry: string | null;
   thumbnails: string[];
+  mobileThumbnail: string | null;
 };
 
 const PAGE_SIZE = 6;
@@ -119,10 +120,10 @@ function Row({ project: p }: { project: FeaturedProject }) {
 
   return (
     <li className="flex flex-col gap-6 border-b border-label py-8 last:border-b-0 sm:py-10">
-      {/* Phones show just the first image, above the title */}
-      {thumbs[0] && (
+      {/* Phones show just one image, above the title: the Mobile thumbnail, else the first one */}
+      {(p.mobileThumbnail ?? thumbs[0]) && (
         <Link href={href} className="sm:hidden" tabIndex={-1} aria-hidden>
-          <img src={thumbs[0]} alt="" loading="lazy" className="w-full" />
+          <img src={p.mobileThumbnail ?? thumbs[0]} alt="" loading="lazy" className="w-full" />
         </Link>
       )}
 

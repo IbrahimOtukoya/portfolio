@@ -29,6 +29,8 @@ export type Project = {
   featured: boolean;
   cover: string | null;
   thumbnails: string[];
+  /** Replaces the first thumbnail in the home page row on phones. */
+  mobileThumbnail: string | null;
 };
 
 /** A Notion block with its children already loaded (for columns, toggles, lists). */
@@ -122,6 +124,7 @@ function toProject(page: PageObjectResponse): Project {
     featured: checkbox(props, "Featured"),
     cover: pageCoverUrl(page),
     thumbnails: fileUrls(page, "Thumbnails"),
+    mobileThumbnail: fileUrls(page, "Mobile thumbnail")[0] ?? null,
   };
 }
 
