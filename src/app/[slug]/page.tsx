@@ -75,6 +75,11 @@ export default async function ProjectPage({ params }: Params) {
 
   return (
     <article className="mx-auto max-w-[1512px] px-4 pb-24 pt-16 sm:px-6">
+      {/* Editorial pages open with the Notion cover as a wide header image. */}
+      {project.layout === "Editorial" && project.cover && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={project.cover} alt="" className="mb-12 w-full sm:mb-16" />
+      )}
       <header className="mb-12 grid gap-8 md:grid-cols-[1fr_minmax(0,560px)]">
         <h1 className="text-display leading-[1.1] tracking-tight text-accent">{project.title}</h1>
         <div className="space-y-6">
