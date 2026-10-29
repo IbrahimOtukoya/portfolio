@@ -79,7 +79,7 @@ export default async function ProjectPage({ params }: Params) {
     const { intro, images } = splitImages(blocks);
     return (
       <article className="mx-auto w-full max-w-[1242px] px-6 pb-24 pt-6 sm:pt-[14px]">
-        <ProjectHeader project={project} cover={project.cover}>
+        <ProjectHeader project={project} cover={project.cover} linkLabel="Download case study">
           {intro.length > 0 ? (
             <CaseStudyBody blocks={intro} first="mt-8 sm:mt-10" />
           ) : (

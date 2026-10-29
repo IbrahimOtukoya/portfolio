@@ -9,10 +9,13 @@ import type { Project } from "@/lib/notion";
 export function ProjectHeader({
   project,
   cover,
+  linkLabel = "Visit website",
   children,
 }: {
   project: Project;
   cover: string | null;
+  /** Text on the button that opens the project's Website link. */
+  linkLabel?: string;
   children?: React.ReactNode;
 }) {
   const meta = [
@@ -44,7 +47,7 @@ export function ProjectHeader({
               rel="noreferrer"
               className="flex w-fit items-center gap-3 bg-accent-soft px-4 py-3 text-background transition-colors hover:bg-accent"
             >
-              Visit website
+              {linkLabel}
               <PixelIcon name="plus" />
             </a>
           )}
