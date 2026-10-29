@@ -1,5 +1,5 @@
-/* eslint-disable @next/next/no-img-element -- static pixel-art SVGs from the Figma file */
 import Link from "next/link";
+import { FooterPortrait } from "@/components/FooterPortrait";
 import { site } from "@/content/site";
 
 export function Footer() {
@@ -21,9 +21,9 @@ export function Footer() {
           </p>
         </div>
 
-        {/* Pixel portrait with its grid, one 769×769 SVG from the Figma file, centred. */}
+        {/* Pixel portrait with its grid, one 769×769 SVG from the Figma file, centred; the pupils follow the cursor. */}
         <div className="relative -mx-5 max-w-[769px] sm:mx-auto sm:w-full lg:absolute lg:inset-y-8 lg:left-1/2 lg:flex lg:w-auto lg:max-w-none lg:-translate-x-1/2 lg:items-center">
-          <img src="/pixel/footer-portrait.svg" alt="Pixel-art portrait of Ibrahim Otukoya" className="aspect-square w-full lg:h-full lg:max-h-[769px] lg:w-auto lg:max-w-none" />
+          <FooterPortrait className="aspect-square w-full lg:h-full lg:max-h-[769px] lg:w-auto lg:max-w-none" />
         </div>
 
         <div className="relative z-10 flex flex-col items-center gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 lg:absolute lg:inset-x-6 lg:bottom-8">
