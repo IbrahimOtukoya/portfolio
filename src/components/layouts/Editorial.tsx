@@ -1,0 +1,84 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+
+/**
+ * Carousel for editorial work. Each image is one spread mockup; visitors swipe,
+ * scroll sideways, use the arrow keys or pick a dot to move between them.
+ */
+export function Editorial({ images }: { images: { src: string; alt: string }[] }) {
+  const track = useRef<HTMLDivElement>(null);
+  const [current, setCurrent] = useState(0);
+
+  const goTo = (i: number) => {
+    const el = track.current;
+    if (!el) return;
+    const index = Math.max(0, Math.min(images.length - 1, i));
+    el.scrollTo({ left: index * el.clientWidth, behavior: "smooth" });
+  };
+
+  // The active dot follows whichever slide is centred, however the track was scrolled.
+  useEffect(() => {
+    const el = track.current;
+    if (!el) return;
+    const onScroll = () => setCurrent(Math.round(el.scrollLeft / el.clientWidth));
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "ArrowRight") goTo(current + 1);
+      if (e.key === "ArrowLeft") goTo(current - 1);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  });
+
+  if (images.length === 0) return null;
+
+  return (
+    <section aria-roledescription="carousel" aria-label="Spreads" className="flex flex-col items-center gap-8">
+      <div
+        ref={track}
+        className="no-scrollbar flex w-full snap-x snap-mandatory overflow-x-auto overscroll-x-contain"
+      >
+        {images.map((img, i) => (
+          <figure
+            key={img.src}
+            aria-roledescription="slide"
+            aria-label={`${i + 1} of ${images.length}`}
+            className="flex w-full shrink-0 snap-center snap-always justify-center"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={img.src}
+              alt={img.alt || `Spread ${i + 1}`}
+              draggable={false}
+              loading={i < 2 ? "eager" : "lazy"}
+              className="max-h-[80vh] w-auto max-w-full select-none object-contain"
+            />
+          </figure>
+        ))}
+      </div>
+
+      {images.length > 1 && (
+        <div className="flex items-center gap-2 text-accent">
+          {images.map((img, i) => (
+            <button
+              key={img.src}
+              onClick={() => goTo(i)}
+              aria-label={`Go to spread ${i + 1}`}
+              aria-current={i === current}
+              className={`flex size-7 items-center justify-center rounded-full border transition-colors ${
+                i === current ? "border-current" : "border-transparent hover:border-current/30"
+              }`}
+            >
+              <span className="size-1 rounded-full bg-current" />
+            </button>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}

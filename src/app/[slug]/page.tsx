@@ -4,6 +4,7 @@ import { NotionBlocks } from "@/components/NotionBlocks";
 import { Gallery } from "@/components/layouts/Gallery";
 import { GalleryIntro } from "@/components/layouts/GalleryIntro";
 import { Showcase } from "@/components/layouts/Showcase";
+import { Editorial } from "@/components/layouts/Editorial";
 import { CaseStudy } from "@/components/layouts/CaseStudy";
 import { PagerNav } from "@/components/PagerNav";
 import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
@@ -113,7 +114,13 @@ function Body({ layout, blocks }: { layout: string; blocks: Block[] }) {
   return (
     <div className="flex flex-col gap-12">
       {intro.length > 0 && <NotionBlocks blocks={intro} />}
-      {layout === "Gallery" ? <Gallery images={images} /> : <Showcase pages={images.map((i) => i.src)} />}
+      {layout === "Gallery" ? (
+        <Gallery images={images} />
+      ) : layout === "Editorial" ? (
+        <Editorial images={images} />
+      ) : (
+        <Showcase pages={images.map((i) => i.src)} />
+      )}
     </div>
   );
 }

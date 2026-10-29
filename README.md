@@ -10,7 +10,7 @@ Each row in the Notion database is one project. Only rows with **Published** tic
 |---|---|
 | Title, Summary | Heading and intro text |
 | Slug | URL, e.g. `anchor` → `/anchor` |
-| Layout | **Case study** (text and images in order), **Gallery** (image grid, click to zoom), **Showcase** (flip-book; each image is one page) |
+| Layout | **Case study** (text and images in order), **Gallery** (image grid, click to zoom), **Showcase** (flip-book; each image is one page), **Editorial** (sideways carousel with dots; each image is one spread mockup) |
 | Years, Role, Industry | The /YEAR, /ROLE and INDUSTRY columns on the home page |
 | Category | Drives the /FILTER list (Branding, Illustration, Editorial, Graphic Design) |
 | Thumbnails | Images in the home page row; if empty, the first 4 images in the page are used |
@@ -19,7 +19,7 @@ Each row in the Notion database is one project. Only rows with **Published** tic
 | Featured | Shows on the home page |
 | Cover | Social preview image (falls back to the page cover) |
 
-The page body is the content. For Gallery and Showcase, any text above the first image becomes the intro.
+The page body is the content. For Gallery, Showcase and Editorial, any text above the first image becomes the intro.
 
 Edits appear on the site within 5 minutes. To refresh immediately, open `https://<your-site>/api/revalidate?secret=<REVALIDATE_SECRET>`.
 

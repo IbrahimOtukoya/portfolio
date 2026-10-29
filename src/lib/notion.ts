@@ -11,7 +11,7 @@ import type {
   PageObjectResponse,
 } from "@notionhq/client/build/src/api-endpoints";
 
-export type Layout = "Case study" | "Gallery" | "Showcase";
+export type Layout = "Case study" | "Gallery" | "Showcase" | "Editorial";
 
 export type Project = {
   id: string;
@@ -110,7 +110,7 @@ function toProject(page: PageObjectResponse): Project {
     id: page.id,
     title: text(props, "Title"),
     slug: text(props, "Slug").trim() || page.id,
-    layout: layout === "Gallery" || layout === "Showcase" ? layout : "Case study",
+    layout: layout === "Gallery" || layout === "Showcase" || layout === "Editorial" ? layout : "Case study",
     summary: text(props, "Summary"),
     years: text(props, "Years"),
     roles: multi(props, "Role"),
