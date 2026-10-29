@@ -115,9 +115,9 @@ body {
   100% { transform: translateX(0); }
 }
 
-/* Location pin in the hero chip: the centre pixel swaps red and yellow every 0.5s. */
+/* Location pin in the hero chip: the centre pixel swaps red and yellow every 1s. */
 .pin-blink {
-  animation: pin-blink 1s step-end infinite;
+  animation: pin-blink 2s step-end infinite;
 }
 
 @keyframes pin-blink {
