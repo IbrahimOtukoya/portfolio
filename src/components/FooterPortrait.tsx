@@ -18,7 +18,7 @@ const eyes = [
 const REACH = 40;
 
 /**
- * Footer portrait. On devices with a mouse the pupils follow the cursor, one pixel cell at a
+ * Footer portrait. Whenever a mouse moves, the pupils follow the cursor, one pixel cell at a
  * time, always staying on the white of the eye.
  */
 export function FooterPortrait({ className }: { className?: string }) {
@@ -26,7 +26,6 @@ export function FooterPortrait({ className }: { className?: string }) {
   const [pupils, setPupils] = useState(eyes.map((e) => e.rest));
 
   useEffect(() => {
-    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
     let frame = 0;
     const onMove = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
