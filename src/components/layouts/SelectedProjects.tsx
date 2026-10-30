@@ -50,8 +50,9 @@ export function SelectedProjects({ items, className = "" }: { items: SelectedPro
           slideName="image"
           className="mt-6 gap-6"
           trackClassName="bg-[#fffbf5] py-3 sm:py-6"
-          slideClassName="px-3 sm:px-6"
-          imageClassName="max-h-[75vh]"
+          // Every slide keeps one wide frame, so square and wide images don't resize the panel.
+          slideClassName="aspect-[2/1] max-h-[75vh] px-3 sm:px-6"
+          imageClassName="h-full w-full"
         />
       )}
     </section>

@@ -13,7 +13,7 @@ export function ImageCarousel({
   slideName,
   trackClassName = "",
   slideClassName = "",
-  imageClassName = "max-h-[80vh]",
+  imageClassName = "max-h-[80vh] w-auto max-w-full",
   className = "gap-8",
 }: {
   images: { src: string; alt: string }[];
@@ -73,7 +73,7 @@ export function ImageCarousel({
               alt={img.alt || `${slideName[0].toUpperCase()}${slideName.slice(1)} ${i + 1}`}
               draggable={false}
               loading={i < 2 ? "eager" : "lazy"}
-              className={`w-auto max-w-full select-none object-contain ${imageClassName}`}
+              className={`select-none object-contain ${imageClassName}`}
             />
           </figure>
         ))}
