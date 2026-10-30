@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element -- thumbnails come from Notion with unknown sizes */
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { PixelIcon } from "@/components/PixelIcon";
 import { site } from "@/content/site";
 import { useImageRatios } from "@/hooks/useImageRatios";
@@ -29,6 +29,7 @@ const cols = "lg:grid-cols-[minmax(0,689fr)_minmax(0,276fr)_minmax(0,254fr)]";
 export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; year: number }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
+  const sectionRef = useRef<HTMLElement>(null);
 
   // Services double as the filter categories; they match Notion's Category values ignoring case.
   const filtered = useMemo(() => {
@@ -38,6 +39,12 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
   const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const shown = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
+  // A later page is often shorter, so jump back to the top of the section instead of keeping the scroll position.
+  const goTo = (p: number) => {
+    setPage(p);
+    sectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const toggle = (service: string | null) => {
     setPage(0);
     if (service === null) return setSelected([]);
@@ -46,7 +53,7 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
   };
 
   return (
-    <section id="work" className="scroll-mt-[70px] bg-surface px-[30px] pb-16 pt-6 sm:px-[23px] sm:pt-16">
+    <section ref={sectionRef} id="work" className="scroll-mt-[70px] bg-surface px-[30px] pb-16 pt-6 sm:px-[23px] sm:pt-16">
       <h2 className="flex items-start gap-1 text-[2rem] text-accent sm:text-display">
         Featured Work<span className="mt-3 text-base">©{year}</span>
       </h2>
@@ -89,20 +96,20 @@ export function FeaturedWork({ projects, year }: { projects: FeaturedProject[]; 
 
       {pageCount > 1 && (
         <nav aria-label="Pages" className="label mt-10 flex items-center justify-center gap-4 text-accent">
-          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0} aria-label="Previous page" className="disabled:opacity-40">
+          <button onClick={() => goTo(Math.max(0, page - 1))} disabled={page === 0} aria-label="Previous page" className="disabled:opacity-40">
             <PixelIcon name="chevron" />
           </button>
           {Array.from({ length: pageCount }, (_, i) => (
             <button
               key={i}
-              onClick={() => setPage(i)}
+              onClick={() => goTo(i)}
               aria-current={i === page ? "page" : undefined}
               className={`grid size-6 place-items-center rounded-[4px] leading-4 ${i === page ? "border border-footer" : ""}`}
             >
               {i + 1}
             </button>
           ))}
-          <button onClick={() => setPage((p) => Math.min(pageCount - 1, p + 1))} disabled={page === pageCount - 1} aria-label="Next page" className="disabled:opacity-40">
+          <button onClick={() => goTo(Math.min(pageCount - 1, page + 1))} disabled={page === pageCount - 1} aria-label="Next page" className="disabled:opacity-40">
             <PixelIcon name="chevron" flip />
           </button>
         </nav>
