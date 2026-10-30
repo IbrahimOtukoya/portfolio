@@ -169,3 +169,16 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* Tailwind 4 leaves buttons with the arrow cursor; give everything clickable the hand.
+   In the base layer, so cursor utilities (the gallery's zoom cursor) still win. */
+@layer base {
+  a[href],
+  button:not(:disabled),
+  [role="button"],
+  summary,
+  label[for],
+  select {
+    cursor: pointer;
+  }
+}
