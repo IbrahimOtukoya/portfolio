@@ -29,6 +29,8 @@ export type Project = {
   featured: boolean;
   cover: string | null;
   thumbnails: string[];
+  /** Gallery layout: tiles per row on desktop. */
+  perRow: number;
   /** Replaces the first thumbnail in the home page row on phones. */
   mobileThumbnail: string | null;
 };
@@ -125,6 +127,7 @@ function toProject(page: PageObjectResponse): Project {
     cover: pageCoverUrl(page),
     thumbnails: fileUrls(page, "Thumbnails"),
     mobileThumbnail: fileUrls(page, "Mobile thumbnail")[0] ?? null,
+    perRow: Math.max(1, Math.round(num(props, "Per row") ?? 4)),
   };
 }
 

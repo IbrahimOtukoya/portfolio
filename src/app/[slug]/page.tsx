@@ -79,7 +79,7 @@ export default async function ProjectPage({ params }: Params) {
         />
 
         <div id="gallery" className="mt-16 scroll-mt-[86px] bg-tint p-3 sm:mx-4 sm:p-4">
-          <Gallery images={images} />
+          <Gallery images={images} perRow={project.perRow} />
         </div>
 
         {prev && next && <PagerNav prev={prev} next={next} className="mx-auto mt-16 w-fit bg-tint px-6 py-4 sm:mt-24" />}

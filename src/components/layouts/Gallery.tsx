@@ -9,10 +9,8 @@ import { embedUrl } from "@/lib/video";
 /** A GIF or still plays as an image; a video is a file or a YouTube/Vimeo link. */
 export type GalleryImage = { src: string; alt: string; video?: boolean };
 
-const PER_ROW = 4;
-
 /** Justified image rows; clicking a tile zooms it over a blurred backdrop. Videos loop silently like GIFs. */
-export function Gallery({ images }: { images: GalleryImage[] }) {
+export function Gallery({ images, perRow = 4 }: { images: GalleryImage[]; perRow?: number }) {
   const [open, setOpen] = useState<number | null>(null);
   const { ratio: measured, bind, bindVideo } = useImageRatios();
   // YouTube and Vimeo players can't report their size, so they're laid out at 16:9.
@@ -20,9 +18,9 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
   const touchX = useRef<number | null>(null);
   const rows = useMemo(() => {
     const out: { img: GalleryImage; i: number }[][] = [];
-    images.forEach((img, i) => (i % PER_ROW === 0 ? out.push([{ img, i }]) : out[out.length - 1].push({ img, i })));
+    images.forEach((img, i) => (i % perRow === 0 ? out.push([{ img, i }]) : out[out.length - 1].push({ img, i })));
     return out;
-  }, [images]);
+  }, [images, perRow]);
 
   const close = useCallback(() => setOpen(null), []);
   const step = useCallback(
@@ -47,7 +45,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
 
   return (
     <>
-      {/* Rows of four on desktop; each image's width follows its aspect ratio so a row shares one height. */}
+      {/* Rows of four (or the project's "Per row") on desktop; each image's width follows its aspect ratio so a row shares one height. */}
       <div className="flex flex-col gap-4">
         {rows.map((row, r) => (
           <div key={r} className="flex flex-col gap-4 lg:flex-row">
@@ -64,8 +62,8 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             ))}
             {/* A short last row keeps the size of a full one: empty slots stand in for the missing images. */}
             {rows.length > 1 &&
-              row.length < PER_ROW &&
-              Array.from({ length: PER_ROW - row.length }, (_, k) => (
+              row.length < perRow &&
+              Array.from({ length: perRow - row.length }, (_, k) => (
                 <span
                   key={`gap${k}`}
                   aria-hidden
