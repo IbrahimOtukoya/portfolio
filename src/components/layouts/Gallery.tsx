@@ -4,15 +4,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { PixelIcon } from "@/components/PixelIcon";
 import { useImageRatios } from "@/hooks/useImageRatios";
+import { embedUrl } from "@/lib/video";
 
-export type GalleryImage = { src: string; alt: string };
+/** A GIF or still plays as an image; a video is a file or a YouTube/Vimeo link. */
+export type GalleryImage = { src: string; alt: string; video?: boolean };
 
 const PER_ROW = 4;
 
-/** Justified image rows; clicking a tile zooms it over a blurred backdrop. */
+/** Justified image rows; clicking a tile zooms it over a blurred backdrop. Videos loop silently like GIFs. */
 export function Gallery({ images }: { images: GalleryImage[] }) {
   const [open, setOpen] = useState<number | null>(null);
-  const { ratio, bind } = useImageRatios();
+  const { ratio: measured, bind, bindVideo } = useImageRatios();
+  // YouTube and Vimeo players can't report their size, so they're laid out at 16:9.
+  const ratio = (i: number) => (images[i].video && embedUrl(images[i].src) ? 16 / 9 : measured(i));
   const touchX = useRef<number | null>(null);
   const rows = useMemo(() => {
     const out: { img: GalleryImage; i: number }[][] = [];
@@ -55,13 +59,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
                 className="group block min-w-0 cursor-zoom-in overflow-hidden lg:[flex:var(--r)_1_0%]"
                 aria-label={`Open image ${i + 1}`}
               >
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  {...bind(i)}
-                  className="w-full transition-transform duration-500 group-hover:scale-[1.03]"
-                />
+                <Tile img={img} i={i} bind={bind} bindVideo={bindVideo} ratio={ratio(i)} />
               </button>
             ))}
             {/* A short last row keeps the size of a full one: empty slots stand in for the missing images. */}
@@ -93,12 +91,7 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
             touchX.current = null;
           }}
         >
-          <img
-            key={open}
-            src={images[open].src}
-            alt={images[open].alt}
-            className="max-h-full max-w-full animate-[zoom_250ms_ease-out] cursor-zoom-out object-contain shadow-2xl"
-          />
+          <Zoomed key={open} img={images[open]} ratio={ratio(open)} />
           {/* Same style as the PREVIOUS / INDEX / NEXT pager at the foot of project pages. */}
           <div className="label absolute inset-x-0 bottom-4 flex items-center justify-center gap-8 text-xs leading-4 text-accent">
             <button onClick={(e) => (e.stopPropagation(), step(-1))} className="flex items-center gap-2 py-2 hover:underline" aria-label="Previous image">
@@ -119,5 +112,67 @@ export function Gallery({ images }: { images: GalleryImage[] }) {
         </div>
       )}
     </>
+  );
+}
+
+const tileClass = "w-full transition-transform duration-500 group-hover:scale-[1.03]";
+
+function Tile({
+  img,
+  i,
+  bind,
+  bindVideo,
+  ratio,
+}: {
+  img: GalleryImage;
+  i: number;
+  ratio: number;
+} & Pick<ReturnType<typeof useImageRatios>, "bind" | "bindVideo">) {
+  if (!img.video) return <img src={img.src} alt={img.alt} loading="lazy" {...bind(i)} className={tileClass} />;
+  const embed = embedUrl(img.src, { ambient: true });
+  // Clicks pass through the player to the tile, which opens it with sound and controls.
+  if (embed)
+    return (
+      <iframe
+        src={embed}
+        title={img.alt || `Video ${i + 1}`}
+        loading="lazy"
+        allow="autoplay; fullscreen; picture-in-picture"
+        style={{ aspectRatio: ratio }}
+        className={`pointer-events-none ${tileClass}`}
+      />
+    );
+  return <video src={img.src} aria-label={img.alt} autoPlay muted loop playsInline preload="metadata" {...bindVideo(i)} className={tileClass} />;
+}
+
+const zoomClass = "max-h-full max-w-full animate-[zoom_250ms_ease-out] object-contain shadow-2xl";
+
+function Zoomed({ img, ratio }: { img: GalleryImage; ratio: number }) {
+  if (!img.video) return <img src={img.src} alt={img.alt} className={`${zoomClass} cursor-zoom-out`} />;
+  const embed = embedUrl(img.src);
+  // Video controls take clicks, so they don't close the overlay.
+  if (embed)
+    return (
+      <iframe
+        src={embed}
+        title={img.alt || "Video"}
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowFullScreen
+        onClick={(e) => e.stopPropagation()}
+        style={{ aspectRatio: ratio, width: `min(100%, calc((100dvh - 8rem) * ${ratio}))` }}
+        className={`${zoomClass} h-auto`}
+      />
+    );
+  return (
+    <video
+      src={img.src}
+      aria-label={img.alt}
+      autoPlay
+      loop
+      playsInline
+      controls
+      onClick={(e) => e.stopPropagation()}
+      className={zoomClass}
+    />
   );
 }

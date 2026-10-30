@@ -184,12 +184,20 @@ export function imageUrl(block: Block): string | null {
     : `/api/notion-image/block/${block.id}`;
 }
 
+/** URL to play for a video block; uploaded files go through the refresh proxy like images. */
+export function videoUrl(block: Block): string | null {
+  if (block.type !== "video") return null;
+  return block.video.type === "external" ? block.video.external.url : `/api/notion-image/block/${block.id}`;
+}
+
 /** Fresh signed URL for a Notion-hosted file, used by the image proxy route. */
 export async function freshFileUrl(kind: "block" | "cover" | "prop", id: string): Promise<string | null> {
   if (kind === "block") {
     const block = await notion.blocks.retrieve({ block_id: id });
-    if (!isFullBlock(block) || block.type !== "image") return null;
-    return block.image.type === "file" ? block.image.file.url : block.image.external.url;
+    if (!isFullBlock(block)) return null;
+    if (block.type === "image") return block.image.type === "file" ? block.image.file.url : block.image.external.url;
+    if (block.type === "video") return block.video.type === "file" ? block.video.file.url : block.video.external.url;
+    return null;
   }
   const [pageId, propName, index] = kind === "prop" ? id.split("~") : [id];
   const page = await notion.pages.retrieve({ page_id: pageId });

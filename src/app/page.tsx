@@ -16,6 +16,7 @@ export default async function Home() {
       industry: p.industry,
       thumbnails: await getThumbnails(p, 3),
       mobileThumbnail: p.mobileThumbnail,
+      gallery: p.layout === "Gallery",
     })),
   );
 

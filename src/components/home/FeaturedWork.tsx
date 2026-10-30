@@ -16,6 +16,8 @@ export type FeaturedProject = {
   industry: string | null;
   thumbnails: string[];
   mobileThumbnail: string | null;
+  /** Gallery projects link with "View gallery" instead of "Read case study". */
+  gallery: boolean;
 };
 
 const PAGE_SIZE = 6;
@@ -172,7 +174,7 @@ function Row({ project: p }: { project: FeaturedProject }) {
         href={href}
         className="label flex items-center gap-2.5 self-start bg-background p-2 text-xs leading-4 text-accent transition-colors hover:bg-accent hover:text-white"
       >
-        Read case study
+        {p.gallery ? "View gallery" : "Read case study"}
         <PixelIcon name="diamond" className="size-4" />
       </Link>
     </li>

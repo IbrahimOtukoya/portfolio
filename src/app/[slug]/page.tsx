@@ -8,7 +8,7 @@ import { Editorial } from "@/components/layouts/Editorial";
 import { CaseStudy, CaseStudyBody } from "@/components/layouts/CaseStudy";
 import { ProjectHeader } from "@/components/layouts/ProjectHeader";
 import { PagerNav } from "@/components/PagerNav";
-import { getBlocks, getProject, getProjects, imageUrl, type Block } from "@/lib/notion";
+import { getBlocks, getProject, getProjects, imageUrl, videoUrl, type Block } from "@/lib/notion";
 
 export const revalidate = 300;
 // Projects published in Notion after the last deploy are rendered on first visit.
@@ -43,6 +43,21 @@ function splitImages(blocks: Block[]) {
   return { intro, images };
 }
 
+/** Gallery tiles: every image (GIFs included) and video in the page body, in order. */
+function galleryItems(blocks: Block[]) {
+  return blocks.flatMap((b) => {
+    if (b.type === "image") {
+      const src = imageUrl(b);
+      return src ? [{ src, alt: b.image.caption.map((c) => c.plain_text).join("") }] : [];
+    }
+    if (b.type === "video") {
+      const src = videoUrl(b);
+      return src ? [{ src, alt: b.video.caption.map((c) => c.plain_text).join(""), video: true }] : [];
+    }
+    return [];
+  });
+}
+
 export default async function ProjectPage({ params }: Params) {
   const data = await getProject((await params).slug);
   if (!data) notFound();
@@ -50,7 +65,7 @@ export default async function ProjectPage({ params }: Params) {
   const blocks = await getBlocks(project.id);
 
   if (project.layout === "Gallery") {
-    const { images } = splitImages(blocks);
+    const images = galleryItems(blocks);
     return (
       <div className="dot-grid px-4 pb-24 pt-16 sm:px-3">
         <GalleryIntro
