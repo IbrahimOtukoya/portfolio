@@ -15,7 +15,7 @@ export function Footer() {
           <p className="mt-6 text-lg leading-[1.35] sm:text-xl">
             Send me an email at
             <br />
-            <a href={site.enquiryHref} className="hover:underline">
+            <a href={site.enquiryHref} data-track="Email" data-track-where="Footer" className="hover:underline">
               {site.email}
             </a>
           </p>
@@ -33,7 +33,7 @@ export function Footer() {
             </li>
             {site.socials.map((s) => (
               <li key={s.href}>
-                <a href={s.href} target="_blank" rel="noreferrer" className="hover:underline">
+                <a href={s.href} target="_blank" rel="noreferrer" data-track="Social link" data-track-label={s.label} data-track-where="Footer" className="hover:underline">
                   {s.label}
                 </a>
               </li>

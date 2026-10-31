@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import { Geist, JetBrains_Mono } from "next/font/google";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
 import { AnimatedTabIcon } from "@/components/AnimatedTabIcon";
+import { ClickTracker } from "@/components/ClickTracker";
 import { site } from "@/content/site";
 import "./globals.css";
 
@@ -33,6 +35,8 @@ export default function RootLayout({
         <Nav />
         <main>{children}</main>
         <Footer />
+        <Analytics />
+        <ClickTracker />
       </body>
     </html>
   );

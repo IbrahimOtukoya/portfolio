@@ -29,6 +29,8 @@ export function Hero() {
                 href={t.href}
                 {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
                 aria-label={t.label}
+                data-track="Hero tile"
+                data-track-label={t.label}
                 className="tile relative block aspect-[310/208] bg-background"
               >
                 {Array.from({ length: FRAMES }, (_, i) => (

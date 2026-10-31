@@ -46,6 +46,8 @@ export function ProjectHeader({
               href={project.website}
               target="_blank"
               rel="noreferrer"
+              data-track={linkLabel}
+              data-track-label={project.title}
               className="flex w-fit items-center gap-2.5 bg-background p-2 text-accent transition-colors hover:bg-accent hover:text-white"
             >
               {linkLabel}

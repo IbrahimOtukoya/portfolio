@@ -24,7 +24,7 @@ export function Nav() {
               {l.label}
             </Link>
           ))}
-          <a href={enquiry.href} className="text-accent hover:underline">
+          <a href={enquiry.href} data-track="Email" data-track-where="Nav" className="text-accent hover:underline">
             {enquiry.label}
           </a>
         </div>

@@ -51,7 +51,7 @@ export function MobileMenu({ links, enquiry }: { links: NavLink[]; enquiry: NavL
             </li>
           ))}
           <li>
-            <a href={enquiry.href} className="block py-3 text-accent">
+            <a href={enquiry.href} data-track="Email" data-track-where="Mobile menu" className="block py-3 text-accent">
               {enquiry.label}
             </a>
           </li>

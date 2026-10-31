@@ -179,6 +179,9 @@ function Row({ project: p }: { project: FeaturedProject }) {
 
       <Link
         href={href}
+        data-track={p.gallery ? "View gallery" : "Read case study"}
+        data-track-label={p.title}
+        data-track-where="Home"
         className="label flex items-center gap-2.5 self-start bg-background p-2 text-xs leading-4 text-accent transition-colors hover:bg-accent hover:text-white"
       >
         {p.gallery ? "View gallery" : "Read case study"}
