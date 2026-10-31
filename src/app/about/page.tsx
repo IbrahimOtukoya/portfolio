@@ -1,4 +1,4 @@
-/* eslint-disable @next/next/no-img-element -- static images hosted on Framer's CDN for now */
+/* eslint-disable @next/next/no-img-element -- static images, some still on Framer's CDN */
 import type { Metadata } from "next";
 import { about } from "@/content/site";
 

@@ -30,10 +30,10 @@ export const site = {
 };
 
 export const about = {
-  headline: "Ibrahim Otukoya is a brand designer based in Lagos, Nigeria",
+  headline: "Ibrahim Otukoya is a brand designer with a passion for design systems",
   // Shown on two lines in the design.
-  headlineLines: ["Ibrahim Otukoya is a brand designer", "based in Lagos, Nigeria"],
-  portrait: "https://framerusercontent.com/images/zamjyyflZPpwvsGH3Aty1JLk2bM.png",
+  headlineLines: ["Ibrahim Otukoya is a brand designer", "with a passion for design systems"],
+  portrait: "/about/portrait.jpg",
   // The blue opening lines, then the grey paragraphs.
   // Each inner list is one paragraph; its sentences sit on their own lines on wider screens.
   intro: [
