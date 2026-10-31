@@ -5,8 +5,9 @@ import { site } from "@/content/site";
 export function Footer() {
   return (
     <footer className="relative mt-0 overflow-hidden bg-footer text-white">
-      {/* On desktop the footer fills one screen below the 70px navbar, and the portrait scales to fit it. */}
-      <div className="relative mx-auto grid max-w-[1512px] grid-rows-[auto_1fr_auto] gap-16 px-[34px] pb-10 pt-[72px] lg:block lg:px-6 lg:h-[calc(100svh-70px)] lg:min-h-[560px] lg:pt-8">
+      {/* On desktop the footer fills one screen below the 70px navbar, and the portrait scales to fit it.
+          The copy runs the full width of the screen, on the same side margins as the navbar (33px, 35px from sm). */}
+      <div className="relative grid grid-rows-[auto_1fr_auto] gap-16 px-[33px] pb-10 pt-[72px] sm:px-[35px] lg:block lg:h-[calc(100svh-70px)] lg:min-h-[560px] lg:pt-8">
         <div className="relative z-10">
           <p className="label">
             <span className="sm:hidden">Want to work with me?</span>
@@ -26,7 +27,7 @@ export function Footer() {
           <FooterPortrait className="aspect-square w-full lg:h-full lg:max-h-[769px] lg:w-auto lg:max-w-none" />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 lg:absolute lg:inset-x-6 lg:bottom-8">
+        <div className="relative z-10 flex flex-col items-center gap-8 sm:flex-row sm:items-end sm:justify-between sm:gap-6 lg:absolute lg:inset-x-[35px] lg:bottom-8">
           <ul className="label flex flex-wrap justify-center gap-x-9 gap-y-4 text-base sm:flex-col sm:flex-nowrap sm:justify-start sm:text-sm">
             <li>
               <Link href="/#work" className="hover:underline">Work</Link>
