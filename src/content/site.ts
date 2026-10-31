@@ -58,7 +58,7 @@ export const about = {
     "https://framerusercontent.com/images/INVvAPt9h79jeRkehNv6QR9H9o.png",
     "https://framerusercontent.com/images/2iuJ6op3SItKWMLoPPi7UYvA.png",
   ],
-  watching: ["https://framerusercontent.com/images/jxiAQkCif9GaaPQU9qHeGWWz0Dk.png"],
+  watching: ["/about/watching-arrow.jpg"],
 };
 
 export const archive = {
