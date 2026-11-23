@@ -182,3 +182,22 @@ body {
     cursor: pointer;
   }
 }
+
+/* Case study video sound pill: the three dots become bouncing bars while sound is on */
+@keyframes sound-bar {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+.sound-bar {
+  animation: sound-bar 0.9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound-bar {
+    animation: none;
+  }
+}
