@@ -3,7 +3,8 @@ import { PagerNav } from "@/components/PagerNav";
 import { ProjectHeader } from "@/components/layouts/ProjectHeader";
 import { RichText } from "@/components/NotionBlocks";
 import { SelectedProjects, type SelectedProject } from "@/components/layouts/SelectedProjects";
-import { imageUrl, type Block, type Project } from "@/lib/notion";
+import { SoundVideo } from "@/components/SoundVideo";
+import { imageUrl, videoUrl, type Block, type Project } from "@/lib/notion";
 
 type ProjectLink = { slug: string; title: string };
 
@@ -210,7 +211,7 @@ function Media({ block: b }: { block: Block }) {
     el = <img src={src} alt={cap.map((c) => c.plain_text).join("")} loading="lazy" className="w-full" />;
   } else if (b.type === "video") {
     const v = b.video;
-    const src = v.type === "external" ? v.external.url : v.file.url;
+    const src = videoUrl(b) ?? "";
     const yt = src.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/);
     const vimeo = src.match(/vimeo\.com\/(\d+)/);
     const embed = yt ? `https://www.youtube.com/embed/${yt[1]}` : vimeo ? `https://player.vimeo.com/video/${vimeo[1]}` : null;
@@ -218,7 +219,7 @@ function Media({ block: b }: { block: Block }) {
     el = embed ? (
       <iframe src={embed} className="aspect-video w-full" allowFullScreen />
     ) : (
-      <video src={src} autoPlay muted loop playsInline className="w-full" />
+      <SoundVideo src={src} label={v.caption.map((c) => c.plain_text).join("") || undefined} />
     );
   } else if (b.type === "embed") {
     cap = b.embed.caption;

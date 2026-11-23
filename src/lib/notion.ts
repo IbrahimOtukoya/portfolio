@@ -187,10 +187,16 @@ export function imageUrl(block: Block): string | null {
     : `/api/notion-image/block/${block.id}`;
 }
 
-/** URL to play for a video block; uploaded files go through the refresh proxy like images. */
+/**
+ * URL to play for a video block; uploaded files go through the refresh proxy like images.
+ * Links to this site's own files (iotukoya.vercel.app/work/...) become relative paths,
+ * so preview deployments play the copy committed on their branch.
+ */
 export function videoUrl(block: Block): string | null {
   if (block.type !== "video") return null;
-  return block.video.type === "external" ? block.video.external.url : `/api/notion-image/block/${block.id}`;
+  if (block.video.type !== "external") return `/api/notion-image/block/${block.id}`;
+  const url = block.video.external.url;
+  return url.replace(/^https?:\/\/iotukoya\.vercel\.app(?=\/work\/)/, "");
 }
 
 /** Fresh signed URL for a Notion-hosted file, used by the image proxy route. */
